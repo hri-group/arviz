@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vuforia:
     vuforiaLicenseKey: Afer0Xb/////AAABmQr2zPxW7E5tmAnKm7xTF593X67lxvIYCZ5MnmQg/0CGCf8NwqcaHT9fC25yIeRho+abGDmYDhpORhoIiILT8EajHgWa7zt5MiTVR8RFEZlA9wXBeLRtHgDJ9ZChGIxO1EmZZRnTFF+GivYpI+kZhd8aPVeSyvQn1Q+/uVmn3gDmiFPSoMi4ax/V/4NBrjxJ3waZWdEyPdTNwlaBO1MLA1T5ZOOmcytE9BUMjxefqotQ8h+mE6ATwrReUckUN0RgdBuT9oMBJ1bK5aF24AcpCy+KnFZQ+rsiw52hvm/qHhIg6NBoLa6FrpuGzfm1/DDqD3Xf5i4F08NeZ0c721n5R0jcd8fvGu9ycz4UUG1RnUKR
-    ufoLicenseKey: QVhiM0Y1Ly8vLy8vQUFBQUtPbnFIeHJFSGs1N3VrMlg4U050eVBzK2pkOFZxMDhrazlwYjBsYS9aZUIxQlV1ckZWcWt0ZllSQWpnT2tIRlY2VzdOMDRTRjNYRUhmbTF5L1BnYlB4eWdHWEF6RUNheXowc3dyNVNYa2ozdERuRjhka1FpOHRscHdkMDcrcEJEY1FjTjNJcUM1bEgwOTYzQkdZdjRsQStRb0hSQU9nRGthelp5TlY0WHVwWU9EaE05NWw5bXAzbnBDMjM5MWZBWXBFdEdiL2loTDNab3N4b25ZblhjK1JtSS9wLzRoTDIwVGhmTXR6WFJNYkpUTXZLZzJoQ0N0TEJXNEptZ0pSOUtSdStzQWM3QjVNOWFFMGVHQ1dUT1VRSUUweEpiZC9ZL2cvS29iNDhBRXdQOGFwbWR5NmRWU0FHU2psVzRZY2FEU2Zud3J1ZHhucVNmSUZiajNTUnIzM0lKVlFIaW1rL0oyOGNFeDdyekcySXg=
+    ufoLicenseKey: QVlmUHpJbi8vLy8vQUFBQUtOaEpCb0R6aFVydmhRRWRTY0NZeW5SdlhNMHdFMi96bk9IczNEMU00QXJXcXZhQmtHMzBNUE54aGlLWTM5V1N5RE94TmhPaVFqZnAxUjcyeDI3MDlkeFVHSUtBRElyemlueUl2YUwvZVAvRW92Ym1Qei8yQ2J0NWs4MmZvUWlmQWJ3YkE0RURnMFdVNXorSWxvczgrbnBrRWJNaGJoa2N3NFVsWmsvUis3cUgyZmNtaW9mYVdlc1U0dGRMTncwVTE2VTlIcjFrTnFzTW9leFJmdjlyb3M2eDdhaHB2NmwzOEZibjdiUXRhc2FDblNZT1ZjV2hVdVJET05namJzeXBPdC93TzBEMXc4elV4MVlOcjhHTDRkdVBZdlcyQTQwYXFycjNxdWpJS1hDbWZVU2x2SXVYbEp6ajVxV2VaOHYvODZBUkVRS2VVRTdVeXh5N090SENhRDBWV3F0VC9OdU0zcWc2Nlp4bnhXM3g=
     delayedInitialization: 0
     cameraDeviceModeSetting: -1
     maxSimultaneousImageTargets: 1
@@ -22,8 +22,9 @@ MonoBehaviour:
     virtualSceneScaleFactor: 1
     useDelayedLoadingObjectTargets: 0
     modelTargetRecoWhileExtendedTracked: 1
-    version: 9.6.4
+    version: 9.2.8
     eulaAcceptedVersions: '{"Values":["8.3","8.6","9.2","0.0","9.6"]}'
+    modelTargetMode: 0
   database:
     disableModelExtraction: 0
   videoBackground:
@@ -37,9 +38,6 @@ MonoBehaviour:
     arcoreRequirement: 1
     autoImportArcore: 1
   playmode:
-    mSequencePath: 
     playModeType: 1
   webcam:
     renderTextureLayer: 30
-  packageInformation:
-    ARFoundationVersion: 

@@ -1,13 +1,13 @@
 {
   "dependencies": {
     "com.ptc.vuforia.engine": {
-      "version": "git+https://git-packages.developer.vuforia.com#9.6.4",
+      "version": "9.2.8",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
       },
-      "hash": "716a8216fe89b655589017441aa8e6ea2431485c"
+      "url": "https://registry.packages.developer.vuforia.com"
     },
     "com.unity.collab-proxy": {
       "version": "1.2.16",
@@ -73,6 +73,20 @@
       "dependencies": {
         "com.unity.modules.ui": "1.0.0"
       }
+    },
+    "com.unity.xr.oculus.standalone": {
+      "version": "2.38.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.xr.openvr.standalone": {
+      "version": "2.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.unity.xr.windowsmr.metro": {
       "version": "4.2.3",

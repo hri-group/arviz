@@ -1,3 +1,1 @@
-# arviz
-
-ARviz - AR-based ROS visualisation tool
+# ARviz - an AR-based Visualisation tool for ROS

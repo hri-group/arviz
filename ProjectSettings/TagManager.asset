@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Robot
+  - Robot_arm
+  - ring
+  - BarrierMarker
+  - PersonBarrier
+  - clone
+  - Barrier
+  - UI
+  - Workspace
+  - SpawnMarker
+  - BarrierToSpawn
   layers:
   - Default
   - TransparentFX

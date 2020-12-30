@@ -1,6 +1,15 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Vuforia",
+      "url": "https://registry.packages.developer.vuforia.com/",
+      "scopes": [
+        "com.ptc.vuforia"
+      ]
+    }
+  ],
   "dependencies": {
-    "com.ptc.vuforia.engine": "git+https://git-packages.developer.vuforia.com#9.6.4",
+    "com.ptc.vuforia.engine": "9.2.8",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ide.rider": "1.1.4",
     "com.unity.ide.vscode": "1.2.1",
@@ -8,6 +17,8 @@
     "com.unity.textmeshpro": "2.0.1",
     "com.unity.timeline": "1.2.15",
     "com.unity.ugui": "1.0.0",
+    "com.unity.xr.oculus.standalone": "2.38.4",
+    "com.unity.xr.openvr.standalone": "2.0.5",
     "com.unity.xr.windowsmr.metro": "4.2.3",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
