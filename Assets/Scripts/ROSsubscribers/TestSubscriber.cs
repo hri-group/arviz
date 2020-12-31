@@ -14,6 +14,5 @@ namespace RosSharp.RosBridgeClient
         {
             Debug.Log("Hello World");
         }
-
     }
 }
