@@ -5,6 +5,7 @@ using RosSharp.RosBridgeClient;
 using System.Threading;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 using RosSharp;
+using TMPro;
 
 public class TFDisplay : MonoBehaviour
 {
@@ -83,6 +84,9 @@ public class TFDisplay : MonoBehaviour
                 tf_clone.name = new_frame;
                 tf_clone.transform.parent = transform;
                 tf_tree.Add(tf_clone);
+
+                // Set the text to show name of TF
+                tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
             }
         }
         // Create the TF tree
