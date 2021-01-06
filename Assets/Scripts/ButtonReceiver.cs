@@ -56,16 +56,8 @@ public class ButtonReceiver : ReceiverBase
             string tf_name = source.transform.name.Remove(source.transform.name.Length - 9);
             GameObject target_tf = GameObject.Find(tf_name);
 
-            if (target_tf.transform.GetChild(1).gameObject.activeSelf == true)
-                target_tf.transform.GetChild(1).gameObject.SetActive(false);
-            else
-                target_tf.transform.GetChild(1).gameObject.SetActive(true);
-
-            if (target_tf.transform.GetChild(0).gameObject.activeSelf == true)
-                target_tf.transform.GetChild(0).gameObject.SetActive(false);
-            else
-                target_tf.transform.GetChild(0).gameObject.SetActive(true);
-
+            target_tf.transform.GetChild(1).gameObject.SetActive(!target_tf.transform.GetChild(1).gameObject.activeInHierarchy);
+            target_tf.transform.GetChild(0).gameObject.SetActive(!target_tf.transform.GetChild(0).gameObject.activeInHierarchy);
         }
     }
 }
