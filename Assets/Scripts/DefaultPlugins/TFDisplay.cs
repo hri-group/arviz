@@ -41,11 +41,16 @@ public class TFDisplay : MonoBehaviour
         world_frame.transform.localRotation = UnityEngine.Quaternion.identity;
         tf_tree.Add(world_frame);
 
-        StartCoroutine(populateButtons());
+        StartCoroutine(populateMenu());
     }
 
-    IEnumerator populateButtons()
+    IEnumerator populateMenu()
     {
+        GameObject menuPanel = GameObject.Find("MenuPanel");
+        GameObject backPlate = GameObject.Find("BackPlate");
+
+        float offset = -0.05f;
+
         // wait for tree to be populated
         yield return new WaitForSeconds(2f);
 
@@ -55,22 +60,16 @@ public class TFDisplay : MonoBehaviour
             yield return null;
         }
 
-        GameObject[] array_checkboxes = new GameObject[tf_tree.Count];
-        GameObject menuPanel = GameObject.Find("MenuPanel");
-        GameObject backPlate = GameObject.Find("BackPlate");
-
-        float offset = -0.05f;
-
         for (int i = 0; i < tf_tree.Count; i++)
         {
-            array_checkboxes[i] = Instantiate(checkbox_prefab, transform.position, transform.rotation);
+            var checkbox = Instantiate(checkbox_prefab, transform.position, transform.rotation);
 
-            array_checkboxes[i].transform.parent = menuPanel.transform;
-            array_checkboxes[i].transform.localPosition = new UnityEngine.Vector3(-0.2785f, offset, -0.0172f);
-            array_checkboxes[i].transform.localRotation = UnityEngine.Quaternion.identity;
+            checkbox.transform.parent = menuPanel.transform;
+            checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2785f, offset, -0.0172f);
+            checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
 
-            array_checkboxes[i].transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = tf_tree[i].name;
-            array_checkboxes[i].name = tf_tree[i].name + "_checkbox";
+            checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = tf_tree[i].name;
+            checkbox.name = tf_tree[i].name + "_checkbox";
 
             // next checkbox offset lower
             offset -= 0.06f;
