@@ -46,9 +46,6 @@ public class TFDisplay : MonoBehaviour
 
     IEnumerator populateMenu()
     {
-        GameObject menuPanel = GameObject.Find("MenuPanel");
-        GameObject backPlate = GameObject.Find("BackPlate");
-
         float offset = -0.05f;
 
         // wait for tree to be populated
@@ -64,7 +61,7 @@ public class TFDisplay : MonoBehaviour
         {
             var checkbox = Instantiate(checkbox_prefab, transform.position, transform.rotation);
 
-            checkbox.transform.parent = menuPanel.transform;
+            checkbox.transform.parent = GameObject.Find("MenuPanel").transform;
             checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2785f, offset, -0.0172f);
             checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
 
@@ -75,8 +72,8 @@ public class TFDisplay : MonoBehaviour
             offset -= 0.06f;
 
             // Scale size of backplate to match number of entries
-            backPlate.transform.position += new UnityEngine.Vector3(0f, -1f, 0) * 0.06f / 2;
-            backPlate.transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
+            GameObject.Find("BackPlate").transform.position += new UnityEngine.Vector3(0f, -1f, 0) * 0.06f / 2;
+            GameObject.Find("BackPlate").transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
         }
     }
 
