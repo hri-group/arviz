@@ -15,6 +15,7 @@ TagManager:
   - Workspace
   - SpawnMarker
   - BarrierToSpawn
+  - TF
   layers:
   - Default
   - TransparentFX

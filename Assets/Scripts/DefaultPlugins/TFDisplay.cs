@@ -2,22 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RosSharp.RosBridgeClient;
-using System.Threading;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
+using Microsoft.MixedReality.Toolkit.UI;
 using RosSharp;
 using TMPro;
+using UnityEngine.Events;
 
 public class TFDisplay : MonoBehaviour
 {
     [SerializeField]
     GameObject tf_prefab;
+    [SerializeField]
+    GameObject checkbox_prefab;
+
     GameObject rosConnector;
     List<TransformStamped> tf_dynamic;
     List<TransformStamped> tf_static;
     List<string> frame_name;
     List<string> parent_name;
     List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
-    List<GameObject> tf_tree;
+    public List<GameObject> tf_tree;
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +34,53 @@ public class TFDisplay : MonoBehaviour
         parent_to_child_tf = new List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform>();
         tf_tree = new List<GameObject>();
         var world_frame = Instantiate(tf_prefab, transform.position, transform.rotation);
+        world_frame.tag = "TF";
         world_frame.name = "world_tf";
         world_frame.transform.parent = transform;
         world_frame.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
         world_frame.transform.localRotation = UnityEngine.Quaternion.identity;
         tf_tree.Add(world_frame);
+
+        StartCoroutine(populateButtons());
     }
+
+    IEnumerator populateButtons()
+    {
+        // wait for tree to be populated
+        yield return new WaitForSeconds(2f);
+
+        // sanity check
+        while (tf_tree.Count == 0)
+        {
+            yield return null;
+        }
+
+        GameObject[] array_checkboxes = new GameObject[tf_tree.Count];
+        GameObject menuPanel = GameObject.Find("MenuPanel");
+        GameObject backPlate = GameObject.Find("BackPlate");
+
+        float offset = -0.05f;
+
+        for (int i = 0; i < tf_tree.Count; i++)
+        {
+            array_checkboxes[i] = Instantiate(checkbox_prefab, transform.position, transform.rotation);
+
+            array_checkboxes[i].transform.parent = menuPanel.transform;
+            array_checkboxes[i].transform.localPosition = new UnityEngine.Vector3(-0.2785f, offset, -0.0172f);
+            array_checkboxes[i].transform.localRotation = UnityEngine.Quaternion.identity;
+
+            array_checkboxes[i].transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = tf_tree[i].name;
+            array_checkboxes[i].name = tf_tree[i].name + "_checkbox";
+
+            // next checkbox offset lower
+            offset -= 0.06f;
+
+            // Scale size of backplate to match number of entries
+            backPlate.transform.position += new UnityEngine.Vector3(0f, -1f, 0) * 0.06f / 2;
+            backPlate.transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
+        }
+    }
+
     private void Update()
     {
         // Update the list of TF frames
@@ -81,6 +126,7 @@ public class TFDisplay : MonoBehaviour
             if (!tf_tree.Find(frame => frame.name == new_frame))
             {
                 var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
+                tf_clone.tag = "TF";
                 tf_clone.name = new_frame;
                 tf_clone.transform.parent = transform;
                 tf_tree.Add(tf_clone);
