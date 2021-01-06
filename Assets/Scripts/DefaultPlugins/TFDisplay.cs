@@ -21,7 +21,7 @@ public class TFDisplay : MonoBehaviour
     List<string> frame_name;
     List<string> parent_name;
     List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
-    public List<GameObject> tf_tree;
+    List<GameObject> tf_tree;
 
     // Start is called before the first frame update
     void Start()
