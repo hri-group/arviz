@@ -41,6 +41,7 @@ public class TFDisplay : MonoBehaviour
         world_frame.transform.parent = transform;
         world_frame.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
         world_frame.transform.localRotation = UnityEngine.Quaternion.identity;
+        world_frame.transform.Find("Title").GetComponent<TextMeshPro>().text = "world_tf";
         tf_tree.Add(world_frame);
 
         StartCoroutine(populateMenu());
