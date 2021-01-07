@@ -21,15 +21,18 @@ namespace RosSharp.RosBridgeClient
 {
     public class TFSubscriber : UnitySubscriber<MessageTypes.Tf2.TFMessage>
     {
-        public static List<MessageTypes.Geometry.TransformStamped> transforms { get; private set; }
+        private MessageTypes.Geometry.TransformStamped[] PublishedTransformsArr;
+        public List<MessageTypes.Geometry.TransformStamped> PublishedTransforms;
         protected override void Start()
         {
             base.Start();
-            transforms = new List<MessageTypes.Geometry.TransformStamped>();
+            PublishedTransformsArr = new MessageTypes.Geometry.TransformStamped[0];
+            PublishedTransforms = new List<MessageTypes.Geometry.TransformStamped>();
         }
         protected override void ReceiveMessage(MessageTypes.Tf2.TFMessage message)
         {
-            transforms = message.transforms.ToList();
+            PublishedTransformsArr = message.transforms;
+            PublishedTransforms = PublishedTransformsArr.ToList();
         }
     }
 }

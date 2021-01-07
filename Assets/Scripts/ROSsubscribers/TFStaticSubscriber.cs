@@ -18,21 +18,21 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
+    // Subscriber Implemetation when a publisher with latched messages
     public class TFStaticSubscriber : UnitySubscriber<MessageTypes.Tf2.TFMessage>
     {
-        public static List<MessageTypes.Geometry.TransformStamped> transforms { get; private set; }
+        public List<MessageTypes.Geometry.TransformStamped> PublishedTransforms;
         protected override void Start()
         {
             base.Start();
-            transforms = new List<MessageTypes.Geometry.TransformStamped>();
+            PublishedTransforms = new List<MessageTypes.Geometry.TransformStamped>();
         }
         protected override void ReceiveMessage(MessageTypes.Tf2.TFMessage message)
         {
-            // Latched publisher
             int msg_length = message.transforms.Length;
             for (int i = 0; i < msg_length; i++)
             {
-                transforms.Add(message.transforms[i]);
+                PublishedTransforms.Add(message.transforms[i]);
             }
         }
     }

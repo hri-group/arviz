@@ -7,6 +7,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 using RosSharp;
 using TMPro;
 using UnityEngine.Events;
+using System.Linq;
 
 public class TFDisplay : MonoBehaviour
 {
@@ -14,13 +15,14 @@ public class TFDisplay : MonoBehaviour
     GameObject tf_prefab;
     [SerializeField]
     GameObject checkbox_prefab;
-
+    [SerializeField]
     GameObject rosConnector;
-    List<TransformStamped> tf_dynamic;
-    List<TransformStamped> tf_static;
-    List<string> frame_name;
-    List<string> parent_name;
-    List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
+
+    private List<TransformStamped> tf_dynamic;
+    private List<TransformStamped> tf_static;
+    private List<string> frame_name;
+    private List<string> parent_name;
+    private List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
     List<GameObject> tf_tree;
 
     // Start is called before the first frame update
@@ -80,8 +82,8 @@ public class TFDisplay : MonoBehaviour
     private void Update()
     {
         // Update the list of TF frames
-        tf_static = TFStaticSubscriber.transforms;
-        tf_dynamic = TFSubscriber.transforms;
+        tf_static = rosConnector.GetComponent<TFStaticSubscriber>().PublishedTransforms;
+        tf_dynamic = rosConnector.GetComponent<TFSubscriber>().PublishedTransforms;
 
         frame_name.Clear();
         parent_name.Clear();
