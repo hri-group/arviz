@@ -35,14 +35,6 @@ public class TFDisplay : MonoBehaviour
         parent_name = new List<string>();
         parent_to_child_tf = new List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform>();
         tf_tree = new List<GameObject>();
-        var world_frame = Instantiate(tf_prefab, transform.position, transform.rotation);
-        world_frame.tag = "TF";
-        world_frame.name = "world_tf";
-        world_frame.transform.parent = transform;
-        world_frame.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
-        world_frame.transform.localRotation = UnityEngine.Quaternion.identity;
-        world_frame.transform.Find("Title").GetComponent<TextMeshPro>().text = "world_tf";
-        tf_tree.Add(world_frame);
 
         StartCoroutine(populateMenu());
     }
@@ -83,66 +75,87 @@ public class TFDisplay : MonoBehaviour
     private void Update()
     {
         // Update the list of TF frames
-        tf_static = rosConnector.GetComponent<TFStaticSubscriber>().PublishedTransforms;
-        tf_dynamic = rosConnector.GetComponent<TFSubscriber>().PublishedTransforms;
+        tf_static = rosConnector.GetComponent<TFStaticSubscriber>().GetPublishedTransforms();
+        tf_dynamic = rosConnector.GetComponent<TFSubscriber>().GetPublishedTransforms();
+        if (tf_dynamic != null && tf_static != null)
+        {
 
-        frame_name.Clear();
-        parent_name.Clear();
-        parent_to_child_tf.Clear();
+            frame_name.Clear();
+            parent_name.Clear();
+            parent_to_child_tf.Clear();
 
-        foreach (TransformStamped parent_transform in tf_static)
-        {
-            frame_name.Add(parent_transform.child_frame_id + "_tf");
-            parent_name.Add(parent_transform.header.frame_id + "_tf");
-            parent_to_child_tf.Add(parent_transform.transform);
-        }
-        foreach (TransformStamped parent_transform in tf_dynamic)
-        {
-            frame_name.Add(parent_transform.child_frame_id + "_tf");
-            parent_name.Add(parent_transform.header.frame_id + "_tf");
-            parent_to_child_tf.Add(parent_transform.transform);
-        }
-        // Delete the TF frames that no longer exist in the newly received message
-        foreach (GameObject frame in tf_tree)
-        {
-            if (frame)
+            foreach (TransformStamped parent_transform in tf_static)
             {
-                // if the frame name is not found in the new list
-                if (frame_name.IndexOf(frame.name) == -1)
+                frame_name.Add(parent_transform.child_frame_id + "_tf");
+                parent_name.Add(parent_transform.header.frame_id + "_tf");
+                parent_to_child_tf.Add(parent_transform.transform);
+            }
+            foreach (TransformStamped parent_transform in tf_dynamic)
+            {
+                frame_name.Add(parent_transform.child_frame_id + "_tf");
+                parent_name.Add(parent_transform.header.frame_id + "_tf");
+                parent_to_child_tf.Add(parent_transform.transform);
+            }
+            // Delete the TF frames that no longer exist in the newly received list
+            foreach (GameObject frame in tf_tree)
+            {
+                if (frame)
                 {
-                    if (frame.name != "world_tf")
+                    // if the frame name is not found in the new list
+                    if (frame_name.IndexOf(frame.name) == -1)
                     {
-                        Destroy(frame);
+                        if (frame.name != "world_tf")
+                        {
+                            Destroy(frame);
+                        }
                     }
                 }
             }
-        }
-        tf_tree.RemoveAll(frame => frame == null);
+            tf_tree.RemoveAll(frame => frame == null);
 
-        // Create TF frames that have not been added
-        foreach (string new_frame in frame_name)
-        {
-            if (!tf_tree.Find(frame => frame.name == new_frame))
+            // Create TF frames that have not been added
+            foreach (string new_frame in frame_name)
             {
-                var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
-                tf_clone.tag = "TF";
-                tf_clone.name = new_frame;
-                tf_clone.transform.parent = transform;
-                tf_tree.Add(tf_clone);
+                if (!tf_tree.Find(frame => frame.name == new_frame))
+                {
+                    var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
+                    tf_clone.tag = "TF";
+                    tf_clone.name = new_frame;
+                    tf_clone.transform.parent = transform;
+                    tf_tree.Add(tf_clone);
 
-                // Set the text to show name of TF
-                tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
+                    // Set the text to show name of TF
+                    tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
+                }
             }
-        }
-        // Create the TF tree
-        foreach (GameObject frame in tf_tree)
-        {
-            if (frame.name != "world_tf")
+            // Loop through the parent frames to create frames that are not in the frame list
+            foreach (string parent_frame in parent_name)
             {
+                if (!tf_tree.Find(frame => frame.name == parent_frame))
+                {
+                    var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
+                    tf_clone.tag = "TF";
+                    tf_clone.name = parent_frame;
+                    tf_clone.transform.parent = transform;
+                    tf_clone.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
+                    tf_clone.transform.localRotation = new UnityEngine.Quaternion(0, 0, 0, 1);
+                    tf_tree.Add(tf_clone);
+
+                    // Set the text to show name of TF
+                    tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
+                }
+            }            // Create the TF tree
+            foreach (GameObject frame in tf_tree)
+            {
+
                 int parent_idx = frame_name.IndexOf(frame.name);
-                frame.transform.parent = tf_tree.Find(t => t.name == parent_name[parent_idx]).transform;
-                frame.transform.localPosition = parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity();
-                frame.transform.localRotation = parent_to_child_tf[parent_idx].rotation.rosMsg2Unity().Ros2Unity();
+                // If the parent is found, then setParent appropriately, otherwise, just set parent to TFDisplay
+                if (parent_idx > -1)
+                {
+                    frame.transform.parent = tf_tree.Find(t => t.name == parent_name[parent_idx]).transform;
+                    frame.transform.localPosition = parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity();
+                    frame.transform.localRotation = parent_to_child_tf[parent_idx].rotation.rosMsg2Unity().Ros2Unity();
+                }
             }
         }
     }
