@@ -12,7 +12,7 @@ namespace RosSharp.RosBridgeClient
         private List<MessageTypes.Geometry.TransformStamped> PublishedTransforms;
         private MessageTypes.Geometry.TransformStamped[] ReceivedTransforms;
         [SerializeField]
-        public int TFTimeOutInSeconds = 5;
+        public int TFTimeOutInSeconds = 10;
         private uint currTime;
         private bool isMessageReceived;
         protected override void Start()
@@ -63,7 +63,7 @@ namespace RosSharp.RosBridgeClient
                 currTime = PublishedTransforms[j].header.stamp.secs;
             }
             // Delete outdated TF frames
-            PublishedTransforms.RemoveAll(TFFrames => currTime - TFFrames.header.stamp.secs > TFTimeOutInSeconds);
+            PublishedTransforms.RemoveAll(TFFrames => TFFrames.header.stamp.secs < currTime - TFTimeOutInSeconds);
             isMessageReceived = false;
         }
         public List<MessageTypes.Geometry.TransformStamped> GetPublishedTransforms()

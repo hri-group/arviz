@@ -77,6 +77,7 @@ public class TFDisplay : MonoBehaviour
         // Update the list of TF frames
         tf_static = rosConnector.GetComponent<TFStaticSubscriber>().GetPublishedTransforms();
         tf_dynamic = rosConnector.GetComponent<TFSubscriber>().GetPublishedTransforms();
+
         if (tf_dynamic != null && tf_static != null)
         {
 
@@ -101,18 +102,15 @@ public class TFDisplay : MonoBehaviour
             {
                 if (frame)
                 {
-                    // if the frame name is not found in the new list
-                    if (frame_name.IndexOf(frame.name) == -1)
+                    // if the frame name is not found in the new list of frames and parent frames
+                    if (frame_name.IndexOf(frame.name) == -1 && parent_name.IndexOf(frame.name) == -1)
                     {
-                        if (frame.name != "world_tf")
-                        {
-                            Destroy(frame);
-                        }
+                        Destroy(frame);
                     }
                 }
             }
             tf_tree.RemoveAll(frame => frame == null);
-
+            //Debug.Log(tf_tree.Count);
             // Create TF frames that have not been added
             foreach (string new_frame in frame_name)
             {
@@ -144,10 +142,11 @@ public class TFDisplay : MonoBehaviour
                     // Set the text to show name of TF
                     tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
                 }
-            }            // Create the TF tree
+            }
+            //Debug.Log(tf_tree.Count);
+            // Create the TF tree
             foreach (GameObject frame in tf_tree)
             {
-
                 int parent_idx = frame_name.IndexOf(frame.name);
                 // If the parent is found, then setParent appropriately, otherwise, just set parent to TFDisplay
                 if (parent_idx > -1)
