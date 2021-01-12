@@ -16,7 +16,7 @@ In order to use the template, you would need:
 - For HoloLens (UWP) projects, make sure to keep the "Protocol" field to be "WebSocketUWP"
 - Add your elements and enjoy.
 ## Deploy your app
-Instructions on to how to deploy your app is shown here
+Instructions on to how to deploy your app is shown [here](https://hri-wiki.erc.monash.edu/index.php/How_to_pages/How_to_deploy_Unity_applications_onto_the_Hololens)
 ## Subscribers and Publishers
 - Remember to follow the template TestSubscriber and TestPublisher scripts that being provided in Scripts folder
 - Add the subscribers and publishers as properties of ROS Connector GameObject
