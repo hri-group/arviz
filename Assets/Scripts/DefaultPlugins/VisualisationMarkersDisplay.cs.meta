@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 2a1d7b25d0c5b9d4090a2d0c37e2e717
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - rosConnector: {instanceID: 0}
+  - arrowPrefab: {fileID: 4260267781246401731, guid: 063679f97ca8866429e3b1993b201e28,
+      type: 3}
+  - linePrefab: {instanceID: 0}
+  - pointPrefab: {instanceID: 0}
+  - cubePrefab: {instanceID: 0}
+  - spherePrefab: {instanceID: 0}
+  - cylinderPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
