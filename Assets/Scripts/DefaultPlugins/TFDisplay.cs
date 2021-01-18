@@ -41,7 +41,7 @@ public class TFDisplay : MonoBehaviour
 
     IEnumerator populateMenu()
     {
-        float offset = -0.19f;
+        float offset = -0.2263f;
 
         // wait for tree to be populated
         yield return new WaitForSeconds(2f);
