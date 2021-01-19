@@ -21,4 +21,16 @@ public static class ConverterExtension
     {
         return new Color(colour.r, colour.g, colour.b, colour.a);
     }
+    public static RosSharp.RosBridgeClient.MessageTypes.Geometry.Point unity2RosPointMsg(this Vector3 point)
+    {
+        return new RosSharp.RosBridgeClient.MessageTypes.Geometry.Point(point.x, point.y, point.z);
+    }
+    public static RosSharp.RosBridgeClient.MessageTypes.Geometry.Vector3 unity2RosVector3Msg(this Vector3 vector3)
+    {
+        return new RosSharp.RosBridgeClient.MessageTypes.Geometry.Vector3(vector3.x, vector3.y, vector3.z);
+    }
+    public static RosSharp.RosBridgeClient.MessageTypes.Geometry.Quaternion unity2RosQuaternionMsg(this Quaternion quartenion)
+    {
+        return new RosSharp.RosBridgeClient.MessageTypes.Geometry.Quaternion(quartenion.x, quartenion.y, quartenion.z, quartenion.w);
+    }
 }

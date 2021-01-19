@@ -1,11 +1,31 @@
 ﻿using UnityEngine;
 using RosSharp;
+using Microsoft.MixedReality.Toolkit;
 // Written by Steven Hoang 2021
 public class ArrowManipulation : MonoBehaviour
 {
     private Transform ArrowTail;
     private Transform ArrowTip;
     private Transform TipCap;
+    private bool followCursor = false;
+    private GameObject pointerPos;
+    private void Start()
+    {
+        pointerPos = GameObject.Find("pointerPos");
+    }
+    private void Update()
+    {
+        if (followCursor)
+        {
+            Vector3 goal_point = transform.parent.transform.InverseTransformPoint(pointerPos.transform.position);
+            goal_point = new Vector3(goal_point.x, 0, goal_point.z);
+            transform.LookAt(transform.parent.transform.TransformPoint(goal_point));
+        }
+    }
+    public void SetFollowCursor(bool arg)
+    {
+        followCursor = arg;
+    }
     // Specify tip and tail point of the arrow, arrow length will be calculated accordingly
     public void SetArrow(UnityEngine.Vector3 start, UnityEngine.Vector3 end)
     {
@@ -15,6 +35,8 @@ public class ArrowManipulation : MonoBehaviour
         transform.localPosition = start;
         float arrow_length = Vector3.Distance(start, end);
         float arrow_width = arrow_length / 20;
+        Debug.Log(arrow_length);
+        Debug.Log(arrow_width);
         ArrowTail.localScale = new UnityEngine.Vector3(arrow_width, (arrow_length * 0.77f) / 2, arrow_width);
         ArrowTip.localScale = new UnityEngine.Vector3(arrow_width * 2f, arrow_width * 2f, arrow_length * 0.23f);
         TipCap.localScale = new UnityEngine.Vector3(arrow_width * 4f, 0.001f, arrow_width * 4f);
