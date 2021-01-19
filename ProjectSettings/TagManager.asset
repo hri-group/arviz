@@ -16,6 +16,7 @@ TagManager:
   - SpawnMarker
   - BarrierToSpawn
   - TF
+  - MenuPanel
   layers:
   - Default
   - TransparentFX

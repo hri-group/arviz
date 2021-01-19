@@ -56,7 +56,7 @@ public class TFDisplay : MonoBehaviour
         {
             var checkbox = Instantiate(checkbox_prefab, transform.position, transform.rotation);
 
-            checkbox.transform.parent = GameObject.Find("MenuPanel").transform;
+            checkbox.transform.parent = GameObject.Find("TFMenuPanel").transform;
             checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2364f, offset, -0.0172f);
             checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
 

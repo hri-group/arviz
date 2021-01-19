@@ -717,8 +717,8 @@ MonoBehaviour:
   - Event:
       m_PersistentCalls:
         m_Calls: []
-    ClassName: ButtonReceiver
-    AssemblyQualifiedName: ButtonReceiver, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    ClassName: TFButtonReceiver
+    AssemblyQualifiedName: TFButtonReceiver, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     Settings: []
   resetOnDestroy: 0

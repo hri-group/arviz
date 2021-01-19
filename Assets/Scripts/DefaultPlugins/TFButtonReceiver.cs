@@ -7,13 +7,13 @@ using UnityEngine.Events;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 
-public class ButtonReceiver : ReceiverBase
+public class TFButtonReceiver : ReceiverBase
 {
     public override bool HideUnityEvents => true;
 
     private State lastState;
 
-    public ButtonReceiver(UnityEvent ev) : base(ev, "CustomEvent")
+    public TFButtonReceiver(UnityEvent ev) : base(ev, "CustomEvent")
     {
     }
 
