@@ -123,6 +123,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         lineRenderer = DisplayMarker.GetComponent<LineRenderer>();
                         lineRenderer.material.color = marker.color.rosMsg2Unity();
                         lineRenderer.widthMultiplier = (float)marker.scale.x;
+                        lineRenderer.useWorldSpace = false;
                         List<Vector3> vertices = new List<Vector3>();
                         foreach (RosSharp.RosBridgeClient.MessageTypes.Geometry.Point point in marker.points)
                         {
