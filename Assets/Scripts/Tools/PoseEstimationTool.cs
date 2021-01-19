@@ -2,7 +2,7 @@
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 
-public class PoseEstimationTool : BaseInputHandler, IMixedRealityPointerHandler
+public class PoseEstimationTool : MonoBehaviour, IMixedRealityPointerHandler
 {
     public GameObject PrefabToSpawn;
     const int POSITION_STATE = 0;
@@ -29,7 +29,6 @@ public class PoseEstimationTool : BaseInputHandler, IMixedRealityPointerHandler
                     arrow_clone.GetComponent<BoundingBox>().ShowRotationHandleForX = false;
                     arrow_clone.GetComponent<BoundingBox>().ShowRotationHandleForY = true;
                     arrow_clone.GetComponent<BoundingBox>().ShowRotationHandleForZ = false;
-                    Debug.Log("Im placed");
                 }
                 state = ORIENTATION_STATE;
                 break;
@@ -51,14 +50,6 @@ public class PoseEstimationTool : BaseInputHandler, IMixedRealityPointerHandler
     }
 
     public void OnPointerUp(MixedRealityPointerEventData eventData)
-    {
-    }
-
-    protected override void RegisterHandlers()
-    {
-    }
-
-    protected override void UnregisterHandlers()
     {
     }
 }
