@@ -1,4 +1,8 @@
-﻿using Microsoft.MixedReality.Toolkit.Input;
+﻿/*
+ * Written by Steven Hoang 2021
+ * Navigation Tool, mimics what has been offered in Rviz, using arrow to set a Pose for the robot to navigate to
+ */
+using Microsoft.MixedReality.Toolkit.Input;
 using RosSharp;
 using RosSharp.RosBridgeClient;
 using UnityEngine;
@@ -10,7 +14,6 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
     const int ORIENTATION_STATE = 1;
     private int state = 0;
     private GameObject arrow_clone;
-
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         switch (state)
@@ -33,25 +36,22 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
                 goal.header.Update();
                 goal.header.frame_id = "map"; //Hardcoded as map for now, change later
                 goal.pose = new RosSharp.RosBridgeClient.MessageTypes.Geometry.Pose(
-                                        arrow_clone.transform.localPosition.Unity2Ros().unity2RosPointMsg(),
-                                        arrow_clone.transform.localRotation.Unity2Ros().unity2RosQuaternionMsg());
+                                        transform.InverseTransformPoint(arrow_clone.transform.position).Unity2Ros().unity2RosPointMsg(),
+                                        arrow_clone.transform.rotation.Unity2Ros().unity2RosQuaternionMsg());
                 GameObject.Find("/ROS Connector").GetComponent<NavigationPublisher>().SendGoal(goal);
                 Destroy(arrow_clone);
                 state = POSITION_STATE;
                 break;
         }
     }
-
     public void OnPointerDown(MixedRealityPointerEventData eventData)
     {
 
     }
-
     public void OnPointerDragged(MixedRealityPointerEventData eventData)
     {
         
     }
-
     public void OnPointerUp(MixedRealityPointerEventData eventData)
     {
     }

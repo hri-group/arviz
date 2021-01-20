@@ -88,7 +88,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify cube
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity();
-                        DisplayMarker.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.rotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
@@ -99,7 +99,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Sphere
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity();
-                        DisplayMarker.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.rotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
@@ -110,7 +110,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Cylinder
                         DisplayMarker.transform.localScale = new Vector3((float)marker.scale.y, (float)marker.scale.z / 2, (float)marker.scale.x);
-                        DisplayMarker.transform.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.transform.rotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.transform.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
