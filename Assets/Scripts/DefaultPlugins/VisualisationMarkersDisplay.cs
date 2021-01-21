@@ -34,10 +34,12 @@ public class VisualisationMarkersDisplay : MonoBehaviour
     LineRenderer lineRenderer;
     TextMeshPro textTool;
     Transform target;
+    Transform imageTargetTransform;
     // Start is called before the first frame update
     void Start()
     {
         PublishedMarkers = new RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker[0];
+        imageTargetTransform = transform.parent.transform;
     }
     // Update is called once per frame
     void Update()
@@ -88,7 +90,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify cube
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity();
-                        DisplayMarker.rotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.rotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity(); // Apply the rotation of 
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
@@ -99,7 +101,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Sphere
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity();
-                        DisplayMarker.rotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.rotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
@@ -110,7 +112,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Cylinder
                         DisplayMarker.transform.localScale = new Vector3((float)marker.scale.y, (float)marker.scale.z / 2, (float)marker.scale.x);
-                        DisplayMarker.transform.rotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.transform.rotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.transform.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
