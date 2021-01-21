@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using RosSharp;
-using Microsoft.MixedReality.Toolkit;
 // Written by Steven Hoang 2021
 public class ArrowManipulation : MonoBehaviour
 {
@@ -85,7 +84,7 @@ public class ArrowManipulation : MonoBehaviour
             // Arrow Position
             transform.localPosition = arrow.pose.position.rosMsg2Unity().Ros2Unity();
             // Arrow Rotation
-            transform.rotation = GameObject.Find("ImageTarget").transform.localRotation*arrow.pose.orientation.rosMsg2Unity().Ros2Unity();
+            transform.localRotation = arrow.pose.orientation.rosMsg2Unity().Ros2Unity();
 
             // Arrow Colour
             ArrowTail.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();

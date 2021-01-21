@@ -26,16 +26,18 @@ public class TestArrow : MonoBehaviour
         ros_arrow.id = 0;
         ros_arrow.type = RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.ARROW;
         ros_arrow.action = RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.ADD;
-        ros_arrow.pose.position.x = 0;
-        ros_arrow.pose.position.y = 0;
-        ros_arrow.pose.position.z = 0;
+        ros_arrow.pose.position.x = -10.7f;
+        ros_arrow.pose.position.y = -5.3f;
+        ros_arrow.pose.position.z = 0.85f;
         ros_arrow.pose.orientation.x = 0;
-        ros_arrow.pose.orientation.y = 0.707f;
-        ros_arrow.pose.orientation.z = 0;
-        ros_arrow.pose.orientation.w = 0.707f;
+        ros_arrow.pose.orientation.y = 0;
+        ros_arrow.pose.orientation.z = -0.7f;
+        ros_arrow.pose.orientation.w = -0.7f;
         ros_arrow.scale.x = 0.5;
         ros_arrow.scale.y = 0.5;
         ros_arrow.scale.z = 0.5;
+        ros_arrow.color.a = 1;
+        ros_arrow.color.g = 1;
     }
     // Update is called once per frame
     void Update()
