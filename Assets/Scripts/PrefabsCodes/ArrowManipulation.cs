@@ -9,17 +9,19 @@ public class ArrowManipulation : MonoBehaviour
     private Transform TipCap;
     private bool followCursor = false;
     private GameObject pointerPos;
+    private GameObject referenceFrame;
     private void Start()
     {
         pointerPos = GameObject.Find("pointerPos");
+        referenceFrame = GameObject.Find("/ImageTarget/TF Display");
     }
     private void Update()
     {
         if (followCursor)
         {
-            Vector3 goal_point = transform.parent.transform.InverseTransformPoint(pointerPos.transform.position);
+            Vector3 goal_point = referenceFrame.transform.InverseTransformPoint(pointerPos.transform.position);
             goal_point = new Vector3(goal_point.x, 0, goal_point.z);
-            transform.LookAt(transform.parent.transform.TransformPoint(goal_point));
+            transform.LookAt(referenceFrame.transform.TransformPoint(goal_point));
         }
     }
     public void SetFollowCursor(bool arg)
@@ -35,8 +37,6 @@ public class ArrowManipulation : MonoBehaviour
         transform.localPosition = start;
         float arrow_length = Vector3.Distance(start, end);
         float arrow_width = arrow_length / 20;
-        Debug.Log(arrow_length);
-        Debug.Log(arrow_width);
         ArrowTail.localScale = new UnityEngine.Vector3(arrow_width, (arrow_length * 0.77f) / 2, arrow_width);
         ArrowTip.localScale = new UnityEngine.Vector3(arrow_width * 2f, arrow_width * 2f, arrow_length * 0.23f);
         TipCap.localScale = new UnityEngine.Vector3(arrow_width * 4f, 0.001f, arrow_width * 4f);
@@ -85,7 +85,7 @@ public class ArrowManipulation : MonoBehaviour
             // Arrow Position
             transform.localPosition = arrow.pose.position.rosMsg2Unity().Ros2Unity();
             // Arrow Rotation
-            transform.localRotation = arrow.pose.orientation.rosMsg2Unity().Ros2Unity();
+            transform.rotation = GameObject.Find("ImageTarget").transform.localRotation*arrow.pose.orientation.rosMsg2Unity().Ros2Unity();
 
             // Arrow Colour
             ArrowTail.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
