@@ -16,6 +16,8 @@ public class TFDisplay : MonoBehaviour
     [SerializeField]
     GameObject checkbox_prefab;
     [SerializeField]
+    GameObject arrowPrefab;
+    [SerializeField]
     GameObject rosConnector;
 
     private List<TransformStamped> tf_dynamic;
@@ -24,6 +26,7 @@ public class TFDisplay : MonoBehaviour
     private List<string> parent_name;
     private List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
     List<GameObject> tf_tree;
+    List<GameObject> arrows;
 
     // Start is called before the first frame update
     void Start()
@@ -35,10 +38,10 @@ public class TFDisplay : MonoBehaviour
         parent_name = new List<string>();
         parent_to_child_tf = new List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform>();
         tf_tree = new List<GameObject>();
+        arrows = new List<GameObject>();
 
         StartCoroutine(populateMenu());
     }
-
     IEnumerator populateMenu()
     {
         float offset = -0.2263f;
@@ -71,8 +74,7 @@ public class TFDisplay : MonoBehaviour
             GameObject.Find("BackPlate").transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
         }
     }
-
-    private void Update()
+    private void FixedUpdate()
     {
         // Update the list of TF frames
         tf_static = rosConnector.GetComponent<TFStaticSubscriber>().GetPublishedTransforms();
@@ -80,7 +82,6 @@ public class TFDisplay : MonoBehaviour
 
         if (tf_dynamic != null && tf_static != null)
         {
-
             frame_name.Clear();
             parent_name.Clear();
             parent_to_child_tf.Clear();
@@ -110,7 +111,7 @@ public class TFDisplay : MonoBehaviour
                 }
             }
             tf_tree.RemoveAll(frame => frame == null);
-            //Debug.Log(tf_tree.Count);
+            arrows.RemoveAll(arrow => arrow == null);
             // Create TF frames that have not been added
             foreach (string new_frame in frame_name)
             {
@@ -120,8 +121,12 @@ public class TFDisplay : MonoBehaviour
                     tf_clone.tag = "TF";
                     tf_clone.name = new_frame;
                     tf_clone.transform.parent = transform;
+                    var arrow_clone = Instantiate(arrowPrefab, transform.position, UnityEngine.Quaternion.identity);
+                    arrow_clone.name = new_frame + "_arrow";
+                    arrow_clone.transform.parent = transform;
                     tf_tree.Add(tf_clone);
-
+                    // Just add arrows for child frames
+                    arrows.Add(arrow_clone);
                     // Set the text to show name of TF
                     tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
                 }
@@ -138,12 +143,11 @@ public class TFDisplay : MonoBehaviour
                     tf_clone.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
                     tf_clone.transform.localRotation = new UnityEngine.Quaternion(0, 0, 0, 1);
                     tf_tree.Add(tf_clone);
-
                     // Set the text to show name of TF
                     tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
                 }
             }
-            //Debug.Log(tf_tree.Count);
+            int i = 0;
             // Create the TF tree
             foreach (GameObject frame in tf_tree)
             {
@@ -154,8 +158,12 @@ public class TFDisplay : MonoBehaviour
                     frame.transform.parent = tf_tree.Find(t => t.name == parent_name[parent_idx]).transform;
                     frame.transform.localPosition = parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity();
                     frame.transform.localRotation = parent_to_child_tf[parent_idx].rotation.rosMsg2Unity().Ros2Unity();
+                    arrows[i].transform.parent = tf_tree.Find(t => t.name == parent_name[parent_idx]).transform;
+                    arrows[i].GetComponent<ArrowManipulation>().SetArrow(UnityEngine.Vector3.zero, parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity());
                 }
+                i++;
             }
+            i = 0;
         }
     }
 }

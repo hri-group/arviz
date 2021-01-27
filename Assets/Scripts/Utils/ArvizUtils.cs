@@ -5,6 +5,8 @@ using UnityEngine;
 public class ArvizUtils : MonoBehaviour
 {
     private GameObject pointerPos;
+    [SerializeField]
+    private Vector3 ARMarkerTransform;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,5 +43,15 @@ public class ArvizUtils : MonoBehaviour
             pointerPos.SetActive(false);
             pointerPos.transform.SetParent(null, false);
         }
+    }
+    // One-shot recalibration
+    public void Calibrate()
+    {
+        GameObject.Find("ImageTarget").GetComponent<CustomDefaultTrackableEventHandler>().recalibrate = true;
+        GameObject.Find("ImageTarget").GetComponent<CustomDefaultTrackableEventHandler>().reActivate();
+    }
+    public void CancelTool()
+    {
+
     }
 }
