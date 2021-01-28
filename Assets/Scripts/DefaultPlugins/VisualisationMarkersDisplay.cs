@@ -192,13 +192,27 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.GetComponent<SquareEffect>().SetSquareEffect(true);
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.MESH_RESOURCE:
-                        /*
-                         * =================================================================================
-                         * =================================================================================
-                         * ===========================YOUR CODE GOES HERE===================================
-                         * =================================================================================
-                         * =================================================================================
-                         */
+                        /* 
+                         * The mesh with its full directory must be placed in the Resources folder in Assets
+                         * For example: if the mesh location is package://pr2_description/meshes/base_v0/base.dae
+                         * Then the directory that base.dae needs to be in is Resources/pr2_description/meshes/base_v0
+                        */
+                        // Remove the package header in dir and extension
+                        string toRemove = "package://";
+                        string filePath = string.Empty;
+                        int i = marker.mesh_resource.IndexOf(toRemove);
+                        if (i >= 0)
+                        {
+                            filePath = marker.mesh_resource.Remove(i, toRemove.Length);
+                        }
+                        string result = System.IO.Path.ChangeExtension(filePath, null);
+                        // Create the mesh
+                        DisplayMarker = (Transform)Instantiate(Resources.Load(result), Vector3.zero, Quaternion.identity);
+                        DisplayMarker.parent = transform;
+                        DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.localScale = marker.scale.rosMsg2Unity().Ros2UnityScale();
+                        DisplayMarker.name = marker.ns + marker.id;
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.TRIANGLE_LIST:
                         /*
