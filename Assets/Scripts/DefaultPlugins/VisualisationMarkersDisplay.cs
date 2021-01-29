@@ -223,7 +223,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         string result = System.IO.Path.ChangeExtension(filePath, null);
                         // Create the mesh
                         DisplayMarker = (Transform)Instantiate(Resources.Load(result), Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity().Ros2UnityScale();
