@@ -35,11 +35,14 @@ public class VisualisationMarkersDisplay : MonoBehaviour
     TextMeshPro textTool;
     Transform target;
     Transform imageTargetTransform;
+    GameObject TFDisplayObj;
+    List<GameObject> PublishedTFTree;
     // Start is called before the first frame update
     void Start()
     {
         PublishedMarkers = new RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker[0];
         imageTargetTransform = transform.parent.transform;
+        TFDisplayObj = GameObject.Find("TF Display");
     }
     // Update is called once per frame
     void Update()
@@ -47,6 +50,8 @@ public class VisualisationMarkersDisplay : MonoBehaviour
         PublishedMarkers = rosConnector.GetComponent<MarkerArraySubscriber>().GetPublishedMarkers();
         if (PublishedMarkers != null)
         {
+            // Update the TFTree
+            PublishedTFTree = TFDisplayObj.GetComponent<TFDisplay>().TFTree;
             foreach (RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker marker in PublishedMarkers)
             {
                 switch (marker.action)
@@ -72,25 +77,35 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         }
                         continue;
                 }
-                // Assume the reference frame is always going to be the world frame. TODO: fix this so that it could be any frame
-                // This property is reflected in header.frame_id;
+                // Find the parent frame of the marker from the TFTree retrieved
+                GameObject header_frame_obj = PublishedTFTree.Find(frame => frame.name == marker.header.frame_id + "_tf");
+                Transform header_frame;
+                if (header_frame_obj == null)
+                {
+                    header_frame = transform;
+                    Debug.LogWarning("Could not find the parent frame. Using VisualisationMarkerDisplay frame instead");
+                }
+                else
+                {
+                    header_frame = header_frame_obj.transform;
+                }
                 switch (marker.type)
                 {
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.ARROW:
                         DisplayMarker = Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform; 
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.GetComponent<ArrowManipulation>().SetArrow(marker);
                         DisplayMarker.name = marker.ns + marker.id;
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.CUBE:
                         DisplayMarker = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify cube
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity();
-                        DisplayMarker.rotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity(); // Apply the rotation of 
+                        DisplayMarker.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
@@ -101,7 +116,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Sphere
                         DisplayMarker.localScale = marker.scale.rosMsg2Unity();
-                        DisplayMarker.rotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
@@ -111,14 +126,14 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Cylinder
-                        DisplayMarker.transform.localScale = new Vector3((float)marker.scale.y, (float)marker.scale.z / 2, (float)marker.scale.x);
-                        DisplayMarker.transform.rotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity();
-                        DisplayMarker.transform.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.localScale = new Vector3((float)marker.scale.y, (float)marker.scale.z / 2, (float)marker.scale.x);
+                        DisplayMarker.localRotation = imageTargetTransform.localRotation*marker.pose.orientation.rosMsg2Unity().Ros2Unity();
+                        DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.GetComponent<MeshRenderer>().material.color = marker.color.rosMsg2Unity();
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.LINE_STRIP:
                         DisplayMarker = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Line Strip
@@ -145,7 +160,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.CUBE_LIST:
                         DisplayMarker = Instantiate(pointPrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Cube List
@@ -157,7 +172,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.SPHERE_LIST:
                         DisplayMarker = Instantiate(pointPrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Sphere List
@@ -169,7 +184,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.POINTS:
                         DisplayMarker = Instantiate(pointPrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = Vector3.zero;
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modify Point List
@@ -181,7 +196,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         break;
                     case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.TEXT_VIEW_FACING:
                         DisplayMarker = Instantiate(textPrefab, Vector3.zero, Quaternion.identity);
-                        DisplayMarker.parent = transform;
+                        DisplayMarker.parent = header_frame;
                         DisplayMarker.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                         DisplayMarker.name = marker.ns + marker.id;
                         // Modifiy Text
@@ -226,6 +241,8 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                     default:
                         break;
                 }
+                // After performing the transformations, return the marker back to VisualisationMarker for easy management
+                DisplayMarker.parent = transform;
             }
         }
     }

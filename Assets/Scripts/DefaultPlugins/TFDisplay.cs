@@ -25,8 +25,8 @@ public class TFDisplay : MonoBehaviour
     private List<string> frame_name;
     private List<string> parent_name;
     private List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
-    List<GameObject> tf_tree;
-    List<GameObject> arrows;
+    private List<GameObject> arrows;
+    public List<GameObject> TFTree;
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +37,7 @@ public class TFDisplay : MonoBehaviour
         frame_name = new List<string>();
         parent_name = new List<string>();
         parent_to_child_tf = new List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform>();
-        tf_tree = new List<GameObject>();
+        TFTree = new List<GameObject>();
         arrows = new List<GameObject>();
 
         StartCoroutine(populateMenu());
@@ -50,12 +50,12 @@ public class TFDisplay : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // sanity check
-        while (tf_tree.Count == 0)
+        while (TFTree.Count == 0)
         {
             yield return null;
         }
 
-        for (int i = 0; i < tf_tree.Count; i++)
+        for (int i = 0; i < TFTree.Count; i++)
         {
             var checkbox = Instantiate(checkbox_prefab, transform.position, transform.rotation);
 
@@ -63,8 +63,8 @@ public class TFDisplay : MonoBehaviour
             checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2364f, offset, -0.0172f);
             checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
 
-            checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = tf_tree[i].name;
-            checkbox.name = tf_tree[i].name + "_checkbox";
+            checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = TFTree[i].name;
+            checkbox.name = TFTree[i].name + "_checkbox";
 
             // next checkbox offset lower
             offset -= 0.06f;
@@ -99,7 +99,7 @@ public class TFDisplay : MonoBehaviour
                 parent_to_child_tf.Add(parent_transform.transform);
             }
             // Delete the TF frames that no longer exist in the newly received list
-            foreach (GameObject frame in tf_tree)
+            foreach (GameObject frame in TFTree)
             {
                 if (frame)
                 {
@@ -110,12 +110,12 @@ public class TFDisplay : MonoBehaviour
                     }
                 }
             }
-            tf_tree.RemoveAll(frame => frame == null);
+            TFTree.RemoveAll(frame => frame == null);
             arrows.RemoveAll(arrow => arrow == null);
             // Create TF frames that have not been added
             foreach (string new_frame in frame_name)
             {
-                if (!tf_tree.Find(frame => frame.name == new_frame))
+                if (!TFTree.Find(frame => frame.name == new_frame))
                 {
                     var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
                     tf_clone.tag = "TF";
@@ -124,7 +124,7 @@ public class TFDisplay : MonoBehaviour
                     var arrow_clone = Instantiate(arrowPrefab, transform.position, UnityEngine.Quaternion.identity);
                     arrow_clone.name = new_frame + "_arrow";
                     arrow_clone.transform.parent = transform;
-                    tf_tree.Add(tf_clone);
+                    TFTree.Add(tf_clone);
                     // Just add arrows for child frames
                     arrows.Add(arrow_clone);
                     // Set the text to show name of TF
@@ -134,7 +134,7 @@ public class TFDisplay : MonoBehaviour
             // Loop through the parent frames to create frames that are not in the frame list
             foreach (string parent_frame in parent_name)
             {
-                if (!tf_tree.Find(frame => frame.name == parent_frame))
+                if (!TFTree.Find(frame => frame.name == parent_frame))
                 {
                     var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
                     tf_clone.tag = "TF";
@@ -142,28 +142,31 @@ public class TFDisplay : MonoBehaviour
                     tf_clone.transform.parent = transform;
                     tf_clone.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
                     tf_clone.transform.localRotation = new UnityEngine.Quaternion(0, 0, 0, 1);
-                    tf_tree.Add(tf_clone);
+                    TFTree.Add(tf_clone);
                     // Set the text to show name of TF
                     tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
                 }
             }
-            int i = 0;
+            int arrow_index = 0;
             // Create the TF tree
-            foreach (GameObject frame in tf_tree)
+            foreach (GameObject frame in TFTree)
             {
                 int parent_idx = frame_name.IndexOf(frame.name);
                 // If the parent is found, then setParent appropriately, otherwise, just set parent to TFDisplay
                 if (parent_idx > -1)
                 {
-                    frame.transform.parent = tf_tree.Find(t => t.name == parent_name[parent_idx]).transform;
+                    frame.transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
                     frame.transform.localPosition = parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity();
                     frame.transform.localRotation = parent_to_child_tf[parent_idx].rotation.rosMsg2Unity().Ros2Unity();
-                    arrows[i].transform.parent = tf_tree.Find(t => t.name == parent_name[parent_idx]).transform;
-                    arrows[i].GetComponent<ArrowManipulation>().SetArrow(UnityEngine.Vector3.zero, parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity());
+                    if (arrow_index < arrows.Count)
+                    {
+                        arrows[arrow_index].transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
+                        arrows[arrow_index].GetComponent<ArrowManipulation>().SetArrow(UnityEngine.Vector3.zero, parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity());
+                    }
                 }
-                i++;
+                arrow_index++;
             }
-            i = 0;
+            arrow_index = 0;
         }
     }
 }
