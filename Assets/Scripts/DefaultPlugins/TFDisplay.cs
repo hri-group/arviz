@@ -161,7 +161,7 @@ public class TFDisplay : MonoBehaviour
                     if (arrow_index < arrows.Count)
                     {
                         arrows[arrow_index].transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
-                        arrows[arrow_index].GetComponent<ArrowManipulation>().SetArrow(UnityEngine.Vector3.zero, parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity());
+                        arrows[arrow_index].GetComponent<ArrowManipulation>().SetArrow(parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity(), UnityEngine.Vector3.zero);
                     }
                 }
                 arrow_index++;
