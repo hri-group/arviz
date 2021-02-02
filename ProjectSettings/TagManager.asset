@@ -17,6 +17,7 @@ TagManager:
   - BarrierToSpawn
   - TF
   - MenuPanel
+  - HandMenus
   layers:
   - Default
   - TransparentFX
