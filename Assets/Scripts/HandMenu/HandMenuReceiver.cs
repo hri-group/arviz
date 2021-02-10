@@ -29,6 +29,7 @@ public class HandMenuReceiver : ReceiverBase
     {
         GameObject handmenus = GameObject.Find("HandMenus");
         GameObject menupanels = GameObject.Find("MenuPanels");
+        GameObject imagetarget = GameObject.Find("ImageTarget");
 
         base.OnClick(state, source);
 
@@ -64,6 +65,39 @@ public class HandMenuReceiver : ReceiverBase
             // Tools sub-menu
             case "TestButton":
                 break;
+            // Checkboxes
+            case "TFCheckBox":
+            {
+                if (source.GetComponent<Interactable>().IsToggled)
+                    imagetarget.transform.Find("TF Display").gameObject.SetActive(true);
+                else
+                    imagetarget.transform.Find("TF Display").gameObject.SetActive(false);
+                break;
+            }
+            case "VizCheckBox":
+            {
+                if (source.GetComponent<Interactable>().IsToggled)
+                    Debug.Log("Do something");
+                else
+                    Debug.Log("Do something else");
+                break;
+            }
+            case "PoseCheckBox":
+            {
+                if (source.GetComponent<Interactable>().IsToggled)
+                    Debug.Log("Do something");
+                else
+                    Debug.Log("Do something else");
+                break;
+            }
+            case "PointCheckBox":
+            {
+                if (source.GetComponent<Interactable>().IsToggled)
+                    Debug.Log("Do something");
+                else
+                    Debug.Log("Do something else");
+                break;
+            }
             default:
                 break;
         }
