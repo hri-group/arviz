@@ -40,7 +40,7 @@ public class TFDisplay : MonoBehaviour
         TFTree = new List<GameObject>();
         arrows = new List<GameObject>();
 
-        StartCoroutine(populateMenu());
+        // StartCoroutine(populateMenu());
     }
     IEnumerator populateMenu()
     {
@@ -126,9 +126,13 @@ public class TFDisplay : MonoBehaviour
                     arrow_clone.transform.parent = transform;
                     TFTree.Add(tf_clone);
                     // Just add arrows for child frames
-                    arrows.Add(arrow_clone);
+                    // arrows.Add(arrow_clone);
                     // Set the text to show name of TF
                     tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
+
+                    // Turn off TF Display
+                    tf_clone.transform.GetChild(1).gameObject.SetActive(false);
+                    tf_clone.transform.GetChild(0).gameObject.SetActive(false);
                 }
             }
             // Loop through the parent frames to create frames that are not in the frame list
@@ -145,6 +149,10 @@ public class TFDisplay : MonoBehaviour
                     TFTree.Add(tf_clone);
                     // Set the text to show name of TF
                     tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
+
+                    // Turn off TF Display
+                    tf_clone.transform.GetChild(1).gameObject.SetActive(false);
+                    tf_clone.transform.GetChild(0).gameObject.SetActive(false);
                 }
             }
             int arrow_index = 0;
@@ -158,11 +166,13 @@ public class TFDisplay : MonoBehaviour
                     frame.transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
                     frame.transform.localPosition = parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity();
                     frame.transform.localRotation = parent_to_child_tf[parent_idx].rotation.rosMsg2Unity().Ros2Unity();
+                    /*
                     if (arrow_index < arrows.Count)
                     {
                         arrows[arrow_index].transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
                         arrows[arrow_index].GetComponent<ArrowManipulation>().SetArrow(parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity(), UnityEngine.Vector3.zero);
                     }
+                    */
                 }
                 arrow_index++;
             }
