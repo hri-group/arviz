@@ -17,6 +17,7 @@ namespace RosSharp.RosBridgeClient
         // Start is called before the first frame update
         protected override void Start()
         {
+            base.Start();
             PublishedOrientation = new Quaternion();
             PublishedPosition = new Vector3();
         }
@@ -40,8 +41,11 @@ namespace RosSharp.RosBridgeClient
         {
             if(TF != null)
             {
-                TF.transform.localPosition = PublishedPosition;
-                TF.transform.localRotation = PublishedOrientation;
+                if (TF.transform.localPosition != PublishedPosition && TF.transform.localRotation != PublishedOrientation)
+                {
+                    TF.transform.localPosition = PublishedPosition;
+                    TF.transform.localRotation = PublishedOrientation;
+                }
                 isMessageReceived = false;
             }
         }

@@ -23,7 +23,7 @@ public class PointCloudManipulation : MonoBehaviour
     } 
     public void SetDimenstion(RosSharp.RosBridgeClient.MessageTypes.Geometry.Vector3 scale)
     {
-        objectDimension = scale.rosMsg2Unity();
+        objectDimension = scale.rosMsg2Unity().Ros2UnityScale();
     }
     public void SetPoints(RosSharp.RosBridgeClient.MessageTypes.Geometry.Point[] points)
     {
