@@ -139,6 +139,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                             DisplayMarker = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
                             DisplayMarker.parent = header_frame;
                             DisplayMarker.localPosition = Vector3.zero;
+                            DisplayMarker.localRotation = Quaternion.identity;
                             DisplayMarker.name = marker.ns + marker.id;
                             // Modify Line Strip
                             lineRenderer = DisplayMarker.GetComponent<LineRenderer>();
