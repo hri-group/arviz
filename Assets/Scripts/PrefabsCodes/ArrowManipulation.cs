@@ -85,11 +85,10 @@ public class ArrowManipulation : MonoBehaviour
             transform.localPosition = arrow.pose.position.rosMsg2Unity().Ros2Unity();
             // Arrow Rotation
             transform.localRotation = arrow.pose.orientation.rosMsg2Unity().Ros2Unity();
-
-            // Arrow Colour
-            ArrowTail.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
-            ArrowTip.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
-            TipCap.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
         }
+        // Arrow Colour
+        ArrowTail.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
+        ArrowTip.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
+        TipCap.GetComponent<MeshRenderer>().material.color = arrow.color.rosMsg2Unity();
     }
 }
