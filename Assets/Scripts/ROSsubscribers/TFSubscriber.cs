@@ -12,7 +12,7 @@ namespace RosSharp.RosBridgeClient
         private List<MessageTypes.Geometry.TransformStamped> PublishedTransforms;
         private MessageTypes.Geometry.TransformStamped[] ReceivedTransforms;
         [SerializeField]
-        public int TFTimeOutInSeconds = 10;
+        public int TFTimeOutInSeconds = 5;
         private uint currTime;
         private bool isMessageReceived;
         protected override void Start()

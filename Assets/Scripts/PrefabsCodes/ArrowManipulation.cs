@@ -12,7 +12,7 @@ public class ArrowManipulation : MonoBehaviour
     private void Start()
     {
         pointerPos = GameObject.Find("pointerPos");
-        referenceFrame = GameObject.Find("/ImageTarget/TF Display");
+        referenceFrame = GameObject.Find("/ImageTarget/TFListener");
     }
     private void Update()
     {
@@ -26,6 +26,15 @@ public class ArrowManipulation : MonoBehaviour
     public void SetFollowCursor(bool arg)
     {
         followCursor = arg;
+    }
+    public void SetColor(Color tailColor, Color tipColor)
+    {
+        ArrowTail = transform.GetChild(0);
+        ArrowTip = transform.GetChild(1);
+        TipCap = transform.GetChild(2);
+        ArrowTail.GetComponent<MeshRenderer>().material.color = tailColor;
+        ArrowTip.GetComponent<MeshRenderer>().material.color = tipColor;
+        TipCap.GetComponent<MeshRenderer>().material.color = tipColor;
     }
     // Specify tip and tail point of the arrow, arrow length will be calculated accordingly
     public void SetArrow(UnityEngine.Vector3 start, UnityEngine.Vector3 end)

@@ -1,48 +1,116 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using RosSharp.RosBridgeClient;
-using RosSharp.RosBridgeClient.MessageTypes.Geometry;
-using Microsoft.MixedReality.Toolkit.UI;
-using RosSharp;
-using TMPro;
-using UnityEngine.Events;
 using System.Linq;
+using TMPro;
+using UnityEngine;
 
 public class TFDisplay : MonoBehaviour
 {
     [SerializeField]
-    GameObject tf_prefab;
-    [SerializeField]
-    GameObject checkbox_prefab;
+    GameObject tfDisplayPrefab;
     [SerializeField]
     GameObject arrowPrefab;
-    [SerializeField]
-    GameObject rosConnector;
-
-    private List<TransformStamped> tf_dynamic;
-    private List<TransformStamped> tf_static;
-    private List<string> frame_name;
-    private List<string> parent_name;
-    private List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform> parent_to_child_tf;
-    private List<GameObject> arrows;
-    public List<GameObject> TFTree;
+    TFListener tfListener;
+    List<GameObject> publishedTFTree;
+    List<GameObject> renderedTFFrames;
+    List<GameObject> renderedArrows;
+    Transform parentFrame;
+    GameObject targetVisual;
+    GameObject targetArrow;
+    GameObject usedVisual;
+    GameObject usedArrow;
+    string visualSuffix = "_tf";
+    string arrowSuffix = "_arrow";
+    WaitForSeconds updateInterval = new WaitForSeconds(0.05f);
+    RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker arrowMarker;
 
     // Start is called before the first frame update
     void Start()
     {
-        rosConnector = GameObject.Find("ROS Connector");
-        tf_dynamic = new List<TransformStamped>();
-        tf_static = new List<TransformStamped>();
-        frame_name = new List<string>();
-        parent_name = new List<string>();
-        parent_to_child_tf = new List<RosSharp.RosBridgeClient.MessageTypes.Geometry.Transform>();
-        TFTree = new List<GameObject>();
-        arrows = new List<GameObject>();
-
-        // StartCoroutine(populateMenu());
-        StartCoroutine(TFUpdate());
+        publishedTFTree = new List<GameObject>();
+        renderedTFFrames = new List<GameObject>();
+        renderedArrows = new List<GameObject>();
+        tfListener = GameObject.Find("TFListener").GetComponent<TFListener>();
+        StartCoroutine(TFFramesRender());
     }
+    IEnumerator TFFramesRender()
+    {
+        while (true)
+        {
+            publishedTFTree = tfListener.GetTFTree();
+            if (publishedTFTree is null)
+            {
+                Debug.LogWarning("TFTree is updating or not yet instantiated");
+            }
+            else
+            {
+                foreach (GameObject frame in publishedTFTree)
+                {
+                    // TF Visual and name
+                    // Look up if the frame has already been made
+                    targetVisual = renderedTFFrames.Find(res => res.name == frame.name + visualSuffix);
+                    if (targetVisual is null)
+                    {
+                        // Create new frame at the origin of the TFTree if yet created
+                        targetVisual = Instantiate(tfDisplayPrefab, Vector3.zero, Quaternion.identity);
+                        targetVisual.name = frame.name + visualSuffix;
+                        targetVisual.transform.parent = transform;
+                        targetVisual.transform.localPosition = Vector3.zero;
+                        targetVisual.transform.localRotation = Quaternion.identity;
+                        // Update name visual
+                        targetVisual.transform.GetChild(1).GetComponent<TextMeshPro>().text = frame.name;
+                        renderedTFFrames.Add(targetVisual);
+                    }
+                    // Place the visual properly
+                    parentFrame = frame.transform.parent;
+                    targetVisual.transform.parent = parentFrame;
+                    targetVisual.transform.localPosition = frame.transform.localPosition;
+                    targetVisual.transform.localRotation = frame.transform.localRotation;
+                    targetVisual.transform.parent = transform;
+                    // Arrow
+                    // Look up if the arrow has already been made
+                    targetArrow = renderedArrows.Find(res => res.name == frame.name + arrowSuffix);
+                    if(targetArrow is null)
+                    {
+                        // Create new arrow at the origin of the TFTree if yet created
+                        targetArrow = Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity);
+                        targetArrow.name = frame.name + arrowSuffix;
+                        targetArrow.transform.parent = transform;
+                        targetArrow.transform.localPosition = Vector3.zero;
+                        targetArrow.transform.localRotation = Quaternion.identity;
+                        targetArrow.GetComponent<ArrowManipulation>().SetColor(Color.yellow, Color.magenta);
+                        renderedArrows.Add(targetArrow);
+                    }
+                    // Position Arrow
+                    targetArrow.transform.parent = parentFrame;
+                    targetArrow.GetComponent<ArrowManipulation>().SetArrow(frame.transform.localPosition, Vector3.zero);
+                    targetArrow.transform.parent = transform;
+                }
+            }
+            // Loop through to check for unused one
+            foreach (GameObject visual in renderedTFFrames)
+            {
+                usedVisual = publishedTFTree.Find(res => res.name + visualSuffix == visual.name);
+                if (usedVisual is null)
+                {
+                    Destroy(visual);
+                }
+            }
+            renderedTFFrames.RemoveAll(visual => visual == null);
+            foreach (GameObject arrow in renderedArrows)
+            {
+                usedArrow = publishedTFTree.Find(res => res.name + arrowSuffix == arrow.name);
+                if (usedArrow is null)
+                {
+                    Destroy(arrow);
+                }
+            }
+            renderedArrows.RemoveAll(arrow => arrow == null);
+            yield return updateInterval;
+        }
+    }
+
+    /*
     IEnumerator populateMenu()
     {
         float offset = -0.2263f;
@@ -51,12 +119,12 @@ public class TFDisplay : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // sanity check
-        while (TFTree.Count == 0)
+        while (tfTree.Count == 0)
         {
             yield return null;
         }
 
-        for (int i = 0; i < TFTree.Count; i++)
+        for (int i = 0; i < tfTree.Count; i++)
         {
             var checkbox = Instantiate(checkbox_prefab, transform.position, transform.rotation);
 
@@ -64,8 +132,8 @@ public class TFDisplay : MonoBehaviour
             checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2364f, offset, -0.0172f);
             checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
 
-            checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = TFTree[i].name;
-            checkbox.name = TFTree[i].name + "_checkbox";
+            checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = tfTree[i].name;
+            checkbox.name = tfTree[i].name + "_checkbox";
 
             // next checkbox offset lower
             offset -= 0.06f;
@@ -75,118 +143,6 @@ public class TFDisplay : MonoBehaviour
             GameObject.Find("BackPlate").transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
         }
     }
-    IEnumerator TFUpdate()
-    {
-        while (true)
-        {
-            // Update the list of TF frames
-            tf_static = rosConnector.GetComponent<TFStaticSubscriber>().GetPublishedTransforms();
-            tf_dynamic = rosConnector.GetComponent<TFSubscriber>().GetPublishedTransforms();
+    */
 
-            if (tf_dynamic != null && tf_static != null)
-            {
-                frame_name.Clear();
-                parent_name.Clear();
-                parent_to_child_tf.Clear();
-
-                foreach (TransformStamped parent_transform in tf_static)
-                {
-                    frame_name.Add(parent_transform.child_frame_id + "_tf");
-                    parent_name.Add(parent_transform.header.frame_id + "_tf");
-                    parent_to_child_tf.Add(parent_transform.transform);
-                }
-                foreach (TransformStamped parent_transform in tf_dynamic)
-                {
-                    frame_name.Add(parent_transform.child_frame_id + "_tf");
-                    parent_name.Add(parent_transform.header.frame_id + "_tf");
-                    parent_to_child_tf.Add(parent_transform.transform);
-                }
-                // Delete the TF frames that no longer exist in the newly received list
-                foreach (GameObject frame in TFTree)
-                {
-                    if (frame)
-                    {
-                        // if the frame name is not found in the new list of frames and parent frames
-                        if (frame_name.IndexOf(frame.name) == -1 && parent_name.IndexOf(frame.name) == -1)
-                        {
-                            Destroy(frame);
-                        }
-                    }
-                }
-                TFTree.RemoveAll(frame => frame == null);
-                // arrows.RemoveAll(arrow => arrow == null);
-                // Create TF frames that have not been added
-                foreach (string new_frame in frame_name)
-                {
-                    if (!TFTree.Find(frame => frame.name == new_frame))
-                    {
-                        var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
-                        tf_clone.tag = "TF";
-                        tf_clone.name = new_frame;
-                        tf_clone.transform.parent = transform;
-                        TFTree.Add(tf_clone);
-                        // Just add arrows for child frames
-                        // var arrow_clone = Instantiate(arrowPrefab, transform.position, UnityEngine.Quaternion.identity);
-                        // arrow_clone.name = new_frame + "_arrow";
-                        // arrow_clone.transform.parent = transform;
-                        // arrows.Add(arrow_clone);
-                        // Set the text to show name of TF
-                        tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
-
-                        // Turn off TF Display
-                        tf_clone.transform.GetChild(1).gameObject.SetActive(false);
-                        tf_clone.transform.GetChild(0).gameObject.SetActive(false);
-                    }
-                }
-                // Loop through the parent frames to create frames that are not in the frame list
-                foreach (string parent_frame in parent_name)
-                {
-                    if (!TFTree.Find(frame => frame.name == parent_frame))
-                    {
-                        var tf_clone = Instantiate(tf_prefab, transform.position, UnityEngine.Quaternion.identity);
-                        tf_clone.tag = "TF";
-                        tf_clone.name = parent_frame;
-                        tf_clone.transform.parent = transform;
-                        tf_clone.transform.localPosition = new UnityEngine.Vector3(0, 0, 0);
-                        tf_clone.transform.localRotation = new UnityEngine.Quaternion(0, 0, 0, 1);
-                        TFTree.Add(tf_clone);
-                        // Set the text to show name of TF
-                        tf_clone.transform.GetChild(1).GetComponent<TextMeshPro>().text = tf_clone.name;
-
-                        // Turn off TF Display
-                        tf_clone.transform.GetChild(1).gameObject.SetActive(false);
-                        tf_clone.transform.GetChild(0).gameObject.SetActive(false);
-                    }
-                }
-                int arrow_index = 0;
-                // Create the TF tree
-                foreach (GameObject frame in TFTree)
-                {
-                    int parent_idx = frame_name.IndexOf(frame.name);
-                    // If the parent is found, then setParent appropriately, otherwise, just set parent to TFDisplay
-                    if (parent_idx > -1)
-                    {
-                        frame.transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
-                        frame.transform.localPosition = parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity();
-                        frame.transform.localRotation = parent_to_child_tf[parent_idx].rotation.rosMsg2Unity().Ros2Unity();
-                        /*
-                        if (arrow_index < arrows.Count)
-                        {
-                            arrows[arrow_index].transform.parent = TFTree.Find(t => t.name == parent_name[parent_idx]).transform;
-                            arrows[arrow_index].GetComponent<ArrowManipulation>().SetArrow(parent_to_child_tf[parent_idx].translation.rosMsg2Unity().Ros2Unity(), UnityEngine.Vector3.zero);
-                        }
-                        */
-                    }
-                    arrow_index++;
-                }
-                arrow_index = 0;
-            }
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-    public List<GameObject> GetTFTree()
-    {
-        return TFTree;
-    }
 }
-
