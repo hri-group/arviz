@@ -26,6 +26,7 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
                     var result = eventData.Pointer.Result;
                     arrow_clone = Instantiate(PrefabToSpawn, Vector3.zero, Quaternion.identity);
                     arrow_clone.GetComponent<ArrowManipulation>().SetArrow(Vector3.zero, Vector3.forward);
+                    arrow_clone.GetComponent<ArrowManipulation>().SetColor(Color.red, Color.red);
                     arrow_clone.transform.parent = transform.parent; // Parent of GridDisplay aka ImageTarget
                     arrow_clone.transform.position = result.Details.Point;
                     arrow_clone.GetComponent<ArrowManipulation>().SetFollowCursor(true);
