@@ -4,17 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Robot
-  - Robot_arm
-  - ring
-  - BarrierMarker
-  - PersonBarrier
-  - clone
-  - Barrier
-  - UI
-  - Workspace
-  - SpawnMarker
-  - BarrierToSpawn
   - TF
   - MenuPanel
   - HandMenus
