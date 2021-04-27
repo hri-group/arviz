@@ -52,50 +52,34 @@ public class HandMenuReceiver : ReceiverBase
             // Displays sub-menu
             case "TFButton":
                 clearMenuPanels(menupanels);
-                menupanels.transform.Find("TFMenuPanel").gameObject.SetActive(true);
+                // menupanels.transform.Find("TFMenuPanel").gameObject.SetActive(true);
                 break;
             case "VizButton":
                 clearMenuPanels(menupanels);
-                menupanels.transform.Find("TestMenuPanel").gameObject.SetActive(true);
-                break;
-            case "PoseButton":
-                break;
-            case "PointButton":
+                // menupanels.transform.Find("MainMenu").gameObject.SetActive(true);
                 break;
             // Tools sub-menu
-            case "TestButton":
+            case "Navigation2DButton":
                 break;
             // Checkboxes
             case "TFCheckBox":
             {
+                    /*
                 if (source.GetComponent<Interactable>().IsToggled)
                     imagetarget.transform.Find("TF Display").gameObject.SetActive(true);
                 else
                     imagetarget.transform.Find("TF Display").gameObject.SetActive(false);
+                    */
                 break;
             }
             case "VizCheckBox":
             {
+                    /*
                 if (source.GetComponent<Interactable>().IsToggled)
                     Debug.Log("Do something");
                 else
                     Debug.Log("Do something else");
-                break;
-            }
-            case "PoseCheckBox":
-            {
-                if (source.GetComponent<Interactable>().IsToggled)
-                    Debug.Log("Do something");
-                else
-                    Debug.Log("Do something else");
-                break;
-            }
-            case "PointCheckBox":
-            {
-                if (source.GetComponent<Interactable>().IsToggled)
-                    Debug.Log("Do something");
-                else
-                    Debug.Log("Do something else");
+                    */
                 break;
             }
             default:
