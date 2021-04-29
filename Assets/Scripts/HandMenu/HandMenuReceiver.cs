@@ -39,6 +39,7 @@ public class HandMenuReceiver : ReceiverBase
             case "DisplaysButton":
                 handmenus.transform.Find("MainMenu").gameObject.SetActive(false);
                 handmenus.transform.Find("DisplaysMenu").gameObject.SetActive(true);
+                Debug.Log("Im here");
                 break;
             case "ToolsButton":
                 handmenus.transform.Find("MainMenu").gameObject.SetActive(false);
