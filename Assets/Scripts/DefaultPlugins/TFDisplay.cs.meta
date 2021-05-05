@@ -3,7 +3,13 @@ guid: 576b3ed0fa81b7f42a317689be922a0e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - tfDisplayPrefab: {fileID: 6295646311977590325, guid: 033b931df7c60b742b19a2358f9eb4fb,
+      type: 3}
+  - arrowPrefab: {fileID: 4260267781246401730, guid: 063679f97ca8866429e3b1993b201e28,
+      type: 3}
+  - checkboxPrefab: {fileID: 1775492867674862, guid: 7979052b9d714c7469cd1ac826bd5a9f,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

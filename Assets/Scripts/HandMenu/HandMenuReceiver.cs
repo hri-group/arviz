@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
+using RosSharp;
 
 public class HandMenuReceiver : ReceiverBase
 {
@@ -30,7 +31,6 @@ public class HandMenuReceiver : ReceiverBase
         GameObject handmenus = GameObject.Find("HandMenus");
         GameObject menupanels = GameObject.Find("MenuPanels");
         GameObject imagetarget = GameObject.Find("ImageTarget");
-
         base.OnClick(state, source);
 
         switch (source.transform.name)
@@ -39,7 +39,6 @@ public class HandMenuReceiver : ReceiverBase
             case "DisplaysButton":
                 handmenus.transform.Find("MainMenu").gameObject.SetActive(false);
                 handmenus.transform.Find("DisplaysMenu").gameObject.SetActive(true);
-                Debug.Log("Im here");
                 break;
             case "ToolsButton":
                 handmenus.transform.Find("MainMenu").gameObject.SetActive(false);
@@ -52,37 +51,53 @@ public class HandMenuReceiver : ReceiverBase
                 break;
             // Displays sub-menu
             case "TFButton":
-                clearMenuPanels(menupanels);
-                // menupanels.transform.Find("TFMenuPanel").gameObject.SetActive(true);
+                if (menupanels.transform.Find("TFMenuPanel").gameObject.activeInHierarchy)
+                {
+                    clearMenuPanels(menupanels);
+                }
+                else
+                {
+                    clearMenuPanels(menupanels);
+                    menupanels.transform.Find("Dragbar").gameObject.SetActive(true);
+                    menupanels.transform.Find("TFMenuPanel").gameObject.SetActive(true);
+                }
                 break;
             case "VizButton":
-                clearMenuPanels(menupanels);
-                // menupanels.transform.Find("MainMenu").gameObject.SetActive(true);
+                if (menupanels.transform.Find("VizMarkerMenuPanel").gameObject.activeInHierarchy)
+                {
+                    clearMenuPanels(menupanels);
+                }
+                else
+                {
+                    clearMenuPanels(menupanels);
+                    menupanels.transform.Find("Dragbar").gameObject.SetActive(true);
+                    menupanels.transform.Find("VizMarkerMenuPanel").gameObject.SetActive(true);
+                }
                 break;
             // Tools sub-menu
             case "Navigation2DButton":
+                NavigationTool tool = imagetarget.transform.Find("GridDisplay").GetComponent<NavigationTool>();
+                if (tool == null)
+                    imagetarget.transform.Find("GridDisplay").gameObject.AddComponent(System.Type.GetType("NavigationTool"));               
+                else 
+                    imagetarget.transform.Find("GridDisplay").DestroyImmediateIfExists<NavigationTool>();          
                 break;
             // Checkboxes
             case "TFCheckBox":
-            {
-                    /*
                 if (source.GetComponent<Interactable>().IsToggled)
-                    imagetarget.transform.Find("TF Display").gameObject.SetActive(true);
+                    imagetarget.transform.Find("TFDisplay").gameObject.SetActive(true);
                 else
-                    imagetarget.transform.Find("TF Display").gameObject.SetActive(false);
-                    */
+                    imagetarget.transform.Find("TFDisplay").gameObject.SetActive(false);
+                    
                 break;
-            }
+            
             case "VizCheckBox":
-            {
-                    /*
                 if (source.GetComponent<Interactable>().IsToggled)
-                    Debug.Log("Do something");
+                    imagetarget.transform.Find("MarkerArrayDisplay").gameObject.SetActive(true);
                 else
-                    Debug.Log("Do something else");
-                    */
+                    imagetarget.transform.Find("MarkerArrayDisplay").gameObject.SetActive(false);
+
                 break;
-            }
             default:
                 break;
         }
@@ -90,7 +105,7 @@ public class HandMenuReceiver : ReceiverBase
 
     private void clearMenuPanels(GameObject imgt)
     {
-        for (int i = 0; i < imgt.transform.Find("MenuPanels").transform.childCount; i++)
+        for (int i = 0; i < imgt.transform.childCount; i++)
         {
             if (imgt.transform.GetChild(i).CompareTag("MenuPanel"))
             {

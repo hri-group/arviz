@@ -127,7 +127,7 @@ public class TFListener : MonoBehaviour
         }
         else
         {
-            return tfTree;
+            return tfTree.ToList();
         }
     }
 }
