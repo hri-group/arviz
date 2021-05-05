@@ -12,7 +12,7 @@ public class ArrowManipulation : MonoBehaviour
     private void Start()
     {
         pointerPos = GameObject.Find("pointerPos");
-        referenceFrame = GameObject.Find("/ImageTarget/TFListener");
+        referenceFrame = GameObject.Find("/ImageTarget/GridDisplay");
     }
     private void Update()
     {

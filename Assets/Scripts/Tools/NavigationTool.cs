@@ -16,6 +16,10 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
     private GameObject arrow_clone;
     [SerializeField]
     private GameObject referenceFrame;
+    public void Start()
+    {
+        PrefabToSpawn = Resources.Load<GameObject>("Arrow");
+    }
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         switch (state)
@@ -29,11 +33,12 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
                     arrow_clone.GetComponent<ArrowManipulation>().SetColor(Color.red, Color.red);
                     arrow_clone.transform.parent = transform.parent; // Parent of GridDisplay aka ImageTarget
                     arrow_clone.transform.position = result.Details.Point;
-                    arrow_clone.GetComponent<ArrowManipulation>().SetFollowCursor(true);
+                    arrow_clone.GetComponent<ArrowManipulation>().SetFollowCursor(true); // Only works when GridDisplay is enabled
                 }
                 state = ORIENTATION_STATE;
                 break;
             case ORIENTATION_STATE:
+                
                 RosSharp.RosBridgeClient.MessageTypes.Geometry.PoseStamped goal = new RosSharp.RosBridgeClient.MessageTypes.Geometry.PoseStamped();
                 goal.header.Update();
                 goal.header.frame_id = "map"; //Hardcoded as map for now, change later
@@ -42,6 +47,7 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
                 RosSharp.RosBridgeClient.MessageTypes.Geometry.Quaternion orientation = (referenceFrame.transform.localRotation * arrow_clone.transform.localRotation).Unity2Ros().unity2RosQuaternionMsg();
                 goal.pose = new RosSharp.RosBridgeClient.MessageTypes.Geometry.Pose(position, orientation);
                 GameObject.Find("/ROS Connector").GetComponent<NavigationPublisher>().SendGoal(goal);
+                
                 Destroy(arrow_clone);
                 state = POSITION_STATE;
                 break;
@@ -57,5 +63,9 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
     }
     public void OnPointerUp(MixedRealityPointerEventData eventData)
     {
+    }
+    public void OnDestroy()
+    {
+        Destroy(arrow_clone);
     }
 }
