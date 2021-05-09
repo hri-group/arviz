@@ -19,6 +19,7 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
     public void Start()
     {
         PrefabToSpawn = Resources.Load<GameObject>("Arrow");
+        referenceFrame = GameObject.Find("TFListener");
     }
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
@@ -46,7 +47,7 @@ public class NavigationTool : MonoBehaviour, IMixedRealityPointerHandler
                 position.z = 0;
                 RosSharp.RosBridgeClient.MessageTypes.Geometry.Quaternion orientation = (referenceFrame.transform.localRotation * arrow_clone.transform.localRotation).Unity2Ros().unity2RosQuaternionMsg();
                 goal.pose = new RosSharp.RosBridgeClient.MessageTypes.Geometry.Pose(position, orientation);
-                GameObject.Find("/ROS Connector").GetComponent<NavigationPublisher>().SendGoal(goal);
+                GameObject.Find("ROSConnector").GetComponent<NavigationPublisher>().SendGoal(goal);
                 
                 Destroy(arrow_clone);
                 state = POSITION_STATE;
