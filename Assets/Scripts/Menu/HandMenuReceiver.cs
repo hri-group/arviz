@@ -49,29 +49,36 @@ public class HandMenuReceiver : ReceiverBase
                 handmenus.transform.Find("DisplaysMenu").gameObject.SetActive(false);
                 handmenus.transform.Find("MainMenu").gameObject.SetActive(true);
                 break;
-            // Displays sub-menu
+            // Enable the display sub-menu
             case "TFButton":
-                if (menupanels.transform.Find("TFMenuPanel").gameObject.activeInHierarchy)
+                if (!menupanels.transform.Find("TFMenuPanel").gameObject.activeInHierarchy && !imagetarget.transform.Find("TFDisplay").gameObject.activeInHierarchy)
                 {
                     clearMenuPanels(menupanels);
+                    menupanels.transform.Find("Dragbar").gameObject.SetActive(true);
+                    menupanels.transform.Find("Dragbar").position = Microsoft.MixedReality.Toolkit.Utilities.CameraCache.Main.transform.position + new Vector3(0, 0, 0.5f);
+                    menupanels.transform.Find("TFMenuPanel").gameObject.SetActive(true);
+                    imagetarget.transform.Find("TFDisplay").gameObject.SetActive(true);
+
                 }
                 else
                 {
                     clearMenuPanels(menupanels);
-                    menupanels.transform.Find("Dragbar").gameObject.SetActive(true);
-                    menupanels.transform.Find("TFMenuPanel").gameObject.SetActive(true);
+                    imagetarget.transform.Find("TFDisplay").gameObject.SetActive(false);
                 }
                 break;
             case "VizButton":
-                if (menupanels.transform.Find("VizMarkerMenuPanel").gameObject.activeInHierarchy)
+                if (!menupanels.transform.Find("VizMarkerMenuPanel").gameObject.activeInHierarchy && !imagetarget.transform.Find("MarkerArrayDisplay").gameObject.activeInHierarchy)
                 {
                     clearMenuPanels(menupanels);
+                    menupanels.transform.Find("Dragbar").gameObject.SetActive(true);
+                    menupanels.transform.Find("Dragbar").position = Microsoft.MixedReality.Toolkit.Utilities.CameraCache.Main.transform.position + new Vector3(0, 0, 0.5f);
+                    menupanels.transform.Find("VizMarkerMenuPanel").gameObject.SetActive(true);
+                    imagetarget.transform.Find("MarkerArrayDisplay").gameObject.SetActive(true);
                 }
                 else
                 {
                     clearMenuPanels(menupanels);
-                    menupanels.transform.Find("Dragbar").gameObject.SetActive(true);
-                    menupanels.transform.Find("VizMarkerMenuPanel").gameObject.SetActive(true);
+                    imagetarget.transform.Find("MarkerArrayDisplay").gameObject.SetActive(false);
                 }
                 break;
             // Tools sub-menu
@@ -81,22 +88,6 @@ public class HandMenuReceiver : ReceiverBase
                     imagetarget.transform.Find("GridDisplay").gameObject.AddComponent(System.Type.GetType("NavigationTool"));               
                 else 
                     imagetarget.transform.Find("GridDisplay").DestroyImmediateIfExists<NavigationTool>();          
-                break;
-            // Checkboxes
-            case "TFCheckBox":
-                if (source.GetComponent<Interactable>().IsToggled)
-                    imagetarget.transform.Find("TFDisplay").gameObject.SetActive(true);
-                else
-                    imagetarget.transform.Find("TFDisplay").gameObject.SetActive(false);
-                    
-                break;
-            
-            case "VizCheckBox":
-                if (source.GetComponent<Interactable>().IsToggled)
-                    imagetarget.transform.Find("MarkerArrayDisplay").gameObject.SetActive(true);
-                else
-                    imagetarget.transform.Find("MarkerArrayDisplay").gameObject.SetActive(false);
-
                 break;
             default:
                 break;
