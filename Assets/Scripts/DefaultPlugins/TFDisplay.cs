@@ -28,7 +28,7 @@ public class TFDisplay : MonoBehaviour
     string visualSuffix = "_tf";
     string arrowSuffix = "_arrow";
     WaitForSeconds updateInterval = new WaitForSeconds(0.05f);
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +37,7 @@ public class TFDisplay : MonoBehaviour
         renderedArrows = new List<GameObject>();
         tfListener = GameObject.Find("TFListener").GetComponent<TFListener>();
         StartCoroutine(TFFramesRender());
-        StartCoroutine(PopulateMenu());
+        StartCoroutine(PopulateTFMenu());
     }
     IEnumerator TFFramesRender()
     {
@@ -70,6 +70,11 @@ public class TFDisplay : MonoBehaviour
                             targetVisual.transform.GetChild(1).GetComponent<TextMeshPro>().text = frame.name;
                             renderedTFFrames.Add(targetVisual);
                         }
+                        // Look up if the frame is active
+                        if (!targetVisual.activeInHierarchy)
+                        {
+                            targetVisual.SetActive(true);
+                        }
                         // Place the visual properly
                         parentFrame = frame.transform.parent;
                         targetVisual.transform.parent = parentFrame;
@@ -91,6 +96,11 @@ public class TFDisplay : MonoBehaviour
                             targetArrow.GetComponent<ArrowManipulation>().SetColor(Color.yellow, Color.magenta);
                             renderedArrows.Add(targetArrow);
                         }
+                        // Look up if the arrow is active
+                        if (!targetArrow.activeInHierarchy)
+                        {
+                            targetArrow.SetActive(true);
+                        }
                         // Position Arrow
                         targetArrow.transform.parent = parentFrame;
                         targetArrow.GetComponent<ArrowManipulation>().SetArrow(frame.transform.localPosition, Vector3.zero);
@@ -101,25 +111,20 @@ public class TFDisplay : MonoBehaviour
             // Loop through to check for unused one
             foreach (GameObject visual in renderedTFFrames)
             {
-                if (visual != null)
+                usedVisual = publishedTFTree.Find(res => res.name + visualSuffix == visual.name);
+                if (usedVisual is null)
                 {
-                    usedVisual = publishedTFTree.Find(res => res.name + visualSuffix == visual.name);
-                    if (usedVisual is null)
-                    {
-                        DestroyImmediate(visual);
-                    }
+                    visual.SetActive(false);
                 }
             }
             renderedTFFrames.RemoveAll(visual => visual == null);
             foreach (GameObject arrow in renderedArrows)
             {
-                if (arrow != null)
+
+                usedArrow = publishedTFTree.Find(res => res.name + arrowSuffix == arrow.name);
+                if (usedArrow is null)
                 {
-                    usedArrow = publishedTFTree.Find(res => res.name + arrowSuffix == arrow.name);
-                    if (usedArrow is null)
-                    {
-                        DestroyImmediate(arrow);
-                    }
+                    arrow.SetActive(false);
                 }
             }
             renderedArrows.RemoveAll(arrow => arrow == null);
@@ -128,7 +133,7 @@ public class TFDisplay : MonoBehaviour
     }
 
 
-    IEnumerator PopulateMenu()
+    IEnumerator PopulateTFMenu()
     {
         float offset = -0.2263f;
 
