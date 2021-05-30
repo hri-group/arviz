@@ -44,7 +44,11 @@ public class ArrowManipulation : MonoBehaviour
         TipCap = transform.GetChild(2); 
         transform.localPosition = start;
         float arrow_length = Vector3.Distance(start, end);
-        float arrow_width = 0.05f; // Arrow Tail radius in metres, set to be constant 
+        float arrow_width = arrow_length / 20.0f; // Arrow Tail radius in metres
+        if (arrow_width > 0.05f)
+        {
+            arrow_width = 0.05f; // Largest width
+        }
         ArrowTail.localScale = new UnityEngine.Vector3(arrow_width, (arrow_length * 0.77f) / 2, arrow_width);
         ArrowTip.localScale = new UnityEngine.Vector3(arrow_width * 2f, arrow_width * 2f, arrow_length * 0.23f);
         TipCap.localScale = new UnityEngine.Vector3(arrow_width * 4f, 0.001f, arrow_width * 4f);

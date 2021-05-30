@@ -60,8 +60,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
     List<GameObject> publishedTFTree;
     GameObject headerFrameObj;
     Transform hearderFrame;
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         publishedMarkers = new RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker[0];
         tfListener = GameObject.Find("TFListener").GetComponent<TFListener>();

@@ -29,8 +29,7 @@ public class TFDisplay : MonoBehaviour
     string arrowSuffix = "_arrow";
     WaitForSeconds updateInterval = new WaitForSeconds(0.05f);
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         publishedTFTree = new List<GameObject>();
         renderedTFFrames = new List<GameObject>();
@@ -117,7 +116,7 @@ public class TFDisplay : MonoBehaviour
                     visual.SetActive(false);
                 }
             }
-            renderedTFFrames.RemoveAll(visual => visual == null);
+            // renderedTFFrames.RemoveAll(visual => visual == null);
             foreach (GameObject arrow in renderedArrows)
             {
 
@@ -127,7 +126,7 @@ public class TFDisplay : MonoBehaviour
                     arrow.SetActive(false);
                 }
             }
-            renderedArrows.RemoveAll(arrow => arrow == null);
+            // renderedArrows.RemoveAll(arrow => arrow == null);
             yield return updateInterval;
         }
     }
@@ -153,7 +152,7 @@ public class TFDisplay : MonoBehaviour
             checkbox.transform.parent = refMenuPanel.transform;
             checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2364f, offset, -0.0172f);
             checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
-            // checkbox.GetComponent<Interactable>().AddReceiver<TestClass>();
+            // checkbox.GetComponent<Interactable>().AddReceiver<TFButtonReceiver>();
             checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = publishedTFTree[i].name;
             checkbox.name = publishedTFTree[i].name + "_checkbox";
 

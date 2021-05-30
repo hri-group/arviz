@@ -58,10 +58,30 @@ public class TFButtonReceiver : ReceiverBase
         {
             foreach (var tf in tfArrow)
             {
-                if (tf.activeInHierarchy)
-                    tf.SetActive(false);
+                if (tf.transform.GetChild(0).gameObject.activeInHierarchy)
+                {
+                    tf.transform.GetChild(0).gameObject.SetActive(false);
+                }
                 else
-                    tf.SetActive(true);
+                {
+                    tf.transform.GetChild(0).gameObject.SetActive(true);
+                }
+                if (tf.transform.GetChild(1).gameObject.activeInHierarchy)
+                {
+                    tf.transform.GetChild(1).gameObject.SetActive(false);
+                }
+                else
+                {
+                    tf.transform.GetChild(1).gameObject.SetActive(true);
+                }
+                if (tf.transform.GetChild(2).gameObject.activeInHierarchy)
+                {
+                    tf.transform.GetChild(2).gameObject.SetActive(false);
+                }
+                else
+                {
+                    tf.transform.GetChild(2).gameObject.SetActive(true);
+                }
             }
         }
         else
