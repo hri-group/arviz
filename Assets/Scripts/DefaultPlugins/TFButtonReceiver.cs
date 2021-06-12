@@ -15,6 +15,10 @@ public class TFButtonReceiver : ReceiverBase
 
     private State lastState;
 
+    public TFButtonReceiver() : this(new UnityEvent())
+    {
+    }
+
     public TFButtonReceiver(UnityEvent ev) : base(ev, "CustomEvent")
     {
     }
