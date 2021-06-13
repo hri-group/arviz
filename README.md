@@ -30,7 +30,8 @@ In order to use the template, you would need:
 - For "Architecture", select "ARM64" 
 - For "Build and Run on", if your HoloLens device is connected via USB, select "USB Device", otherwise select "Remote Device" and enter the HoloLens' details to deploy remotely (via WiFi)   
 - For "Build Configuration", use "Release" or "Debug" when testing, and "Master" for deployment of the final solution  
-- Choose "Build And Run" and your application should build, compile, and be deployed onto the HoloLens  
+- Choose "Build And Run" and your application should build, compile, and be deployed onto the HoloLens
+- There should be around 21 errors when building, this is because of the conflict in the serializer that we used. However, the build should return **SUCCESS** at the end. If not, then check your codes for any other errors  
 ## Feedback appreciated
 Our goal is trying to create a package which can be used by any programmers for any AR-HRI-related projects. The READMEs are prepared so anyone can implement their own functionalities from our template. However, in the case that READMEs are confusing or unclear, please let us know and we will try to address it ASAP  
 Thank you for feedback!  

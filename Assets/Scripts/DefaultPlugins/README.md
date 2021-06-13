@@ -28,9 +28,9 @@ With the Coroutine, retrieve data from ROS Subscriber script, explain here "link
 Another Coroutine should be added to create the menu interface, similar to PopulateMenu()  
 ### Changing the display behavior with display menu
 Similarly to TFButtonReceiver, create a script which defines the behavior of the checkboxes on your display menu  
-Create a copy of the checkbox prefab, rename it and go to Interactable properties as shown above to add your custom behavior event for your checkbox (as created in the previous step)  
-Assign this prefab to your DisplayManipulating script (the previous script that you made which has the couroutines) so that PopulateMenu() can spawn the right checkbox with your customised behavior  
+Assign the Checkbox prefab that has been made available in Prefab folder to your DisplayManipulating script (the previous script that you made which has the couroutines) so that PopulateMenu() can spawn the right checkbox with your customised behavior  
+### Create your menu template on Unity Edtior
+Similarly to TFMenuPanel, duplicate the menu and edit the text on the menu to suit your need  
+Assign this menu to `Ref Menu Panel` field in your DisplayManipulated script that has been added earlier  
 Have fun!  
-_Developer's notes (Steven Hoang)_: I'm in the process of figuring out how to assign the event aka assign the receiver during run-time with script. I'm looking at `<Interactable>.AddReceiver<T>` function but looks like it doesn't work properly. If you guys can figure out how we can make it to work, please let me know.
-
 

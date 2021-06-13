@@ -17,23 +17,23 @@ public class TFDisplay : MonoBehaviour
     [SerializeField]
     GameObject refMenuPanel;
     TFListener tfListener;
-    List<GameObject> publishedTFTree;
-    List<GameObject> renderedTFFrames;
-    List<GameObject> renderedArrows;
+    List<GameObject> publishedTFTree = new List<GameObject>();
+    List<GameObject> renderedTFFrames = new List<GameObject>();
+    List<GameObject> renderedArrows = new List<GameObject>();
+    List<GameObject> checkboxList = new List<GameObject>();
     Transform parentFrame;
     GameObject targetVisual;
     GameObject targetArrow;
     GameObject usedVisual;
     GameObject usedArrow;
+    
     string visualSuffix = "_tf";
     string arrowSuffix = "_arrow";
     WaitForSeconds updateInterval = new WaitForSeconds(0.05f);
+    WaitForSeconds updateMenu = new WaitForSeconds(5f);
 
     private void OnEnable()
     {
-        publishedTFTree = new List<GameObject>();
-        renderedTFFrames = new List<GameObject>();
-        renderedArrows = new List<GameObject>();
         tfListener = GameObject.Find("TFListener").GetComponent<TFListener>();
         StartCoroutine(TFFramesRender());
         StartCoroutine(PopulateTFMenu());
@@ -134,36 +134,48 @@ public class TFDisplay : MonoBehaviour
 
     IEnumerator PopulateTFMenu()
     {
-        float offset = -0.2263f;
-
-        // wait for tree to be populated
-        yield return new WaitForSeconds(2f);
-
-        // sanity check
-        while (publishedTFTree.Count == 0)
+        while (true)
         {
-            yield return null;
-        }
 
-        for (int i = 0; i < publishedTFTree.Count; i++)
-        {
-            var checkbox = Instantiate(checkboxPrefab, transform.position, transform.rotation);
+            float offset = -0.2263f;
 
-            checkbox.transform.parent = refMenuPanel.transform;
-            checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2364f, offset, -0.0172f);
-            checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
-            // checkbox.GetComponent<Interactable>().AddReceiver<TFButtonReceiver>();
-            checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = publishedTFTree[i].name;
-            checkbox.name = publishedTFTree[i].name + "_checkbox";
+            // wait for tree to be populated
+            yield return new WaitForSeconds(2f);
+            
+            foreach (GameObject createdCheckbox in checkboxList)
+            {
+                Destroy(createdCheckbox);
+                // Scale size of backplate to match number of entries
+                refMenuPanel.transform.Find("BackPlate").transform.position -= new UnityEngine.Vector3(0f, -1f, 0) * 0.06f / 2;
+                refMenuPanel.transform.Find("BackPlate").transform.localScale -= new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
+            }
+            checkboxList.Clear();
+            for (int i = 0; i < publishedTFTree.Count; i++)
+            {
+                var checkbox = Instantiate(checkboxPrefab, transform.position, transform.rotation);
 
-            // next checkbox offset lower
-            offset -= 0.06f;
+                checkbox.transform.parent = refMenuPanel.transform;
+                checkbox.transform.localPosition = new UnityEngine.Vector3(-0.2364f, offset, -0.0172f);
+                checkbox.transform.localRotation = UnityEngine.Quaternion.identity;
+                checkbox.GetComponent<Interactable>().AddReceiver<TFButtonReceiver>();
+                checkbox.transform.Find("ButtonContent").transform.Find("Label").GetComponent<TextMesh>().text = publishedTFTree[i].name;
+                checkbox.name = publishedTFTree[i].name + "_checkbox";
+                
+                if (renderedTFFrames.Find(res => res.name == publishedTFTree[i].name + visualSuffix).transform.GetChild(0).gameObject.activeInHierarchy)
+                {
+                    checkbox.GetComponent<Interactable>().IsToggled = true;
+                }
+                
+                checkboxList.Add(checkbox);
+                // next checkbox offset lower
+                offset -= 0.06f;
 
-            // Scale size of backplate to match number of entries
-            refMenuPanel.transform.Find("BackPlate").transform.position += new UnityEngine.Vector3(0f, -1f, 0) * 0.06f / 2;
-            refMenuPanel.transform.Find("BackPlate").transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
+                // Scale size of backplate to match number of entries
+                refMenuPanel.transform.Find("BackPlate").transform.position += new UnityEngine.Vector3(0f, -1f, 0) * 0.06f / 2;
+                refMenuPanel.transform.Find("BackPlate").transform.localScale += new UnityEngine.Vector3(0f, 1f, 0) * 0.06f;
+            }
+            yield return updateMenu;
         }
     }
-
 }
 

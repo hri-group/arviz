@@ -652,7 +652,7 @@ MonoBehaviour:
   isGlobal: 0
   Dimensions: 2
   dimensionIndex: 0
-  startDimensionIndex: 1
+  startDimensionIndex: 0
   CanSelect: 1
   CanDeselect: 1
   VoiceCommand: Select
@@ -714,13 +714,6 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       Options: []
-  - Event:
-      m_PersistentCalls:
-        m_Calls: []
-    ClassName: TFButtonReceiver
-    AssemblyQualifiedName: TFButtonReceiver, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    Settings: []
   resetOnDestroy: 0
   enabledOnStart: 1
 --- !u!114 &8868109116265699985

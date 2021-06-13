@@ -95,7 +95,9 @@ public class TFButtonReceiver : ReceiverBase
             GameObject target_arrow = tfArrow.Find(res => res.name == tf_name + "_arrow");
             target_tf.transform.GetChild(1).gameObject.SetActive(!target_tf.transform.GetChild(1).gameObject.activeInHierarchy);
             target_tf.transform.GetChild(0).gameObject.SetActive(!target_tf.transform.GetChild(0).gameObject.activeInHierarchy);
-            target_arrow.SetActive(!target_arrow.activeInHierarchy);
+            target_arrow.transform.GetChild(0).gameObject.SetActive(!target_arrow.transform.GetChild(0).gameObject.activeInHierarchy);
+            target_arrow.transform.GetChild(1).gameObject.SetActive(!target_arrow.transform.GetChild(1).gameObject.activeInHierarchy);
+            target_arrow.transform.GetChild(2).gameObject.SetActive(!target_arrow.transform.GetChild(2).gameObject.activeInHierarchy);
         }
     }
 }
