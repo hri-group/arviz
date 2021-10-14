@@ -25,8 +25,10 @@ Welcome to ARviz!
 ## Usage
 
 - Create a copy of sample scene
-- Modifiy the ROS Connector's ROSConnector property with the IP address of your ROS machine as shown below  
-![alt text](Images/SetIP.PNG "SetIP")  
+- Modifiy the ROS Connector's ROSConnector property with the IP address of your ROS machine as shown below:
+  
+![Set IP](Images/SetIP.PNG "SetIP")  
+
 - For HoloLens (UWP) projects, make sure to keep the "Protocol" field to be "WebSocketUWP"
 - Read through the README in [Scripts](Assets/Scripts) folder  
 - Implement your functionality or just try out our already implemented functionality  
@@ -37,7 +39,9 @@ Welcome to ARviz!
 - Make sure your HoloLens is not on standby and developer mode is enabled
 - Check the Unity console window to see if there are any script compilation errors or warnings that require amending before attempting to deploy your application onto the Hololens
 - From the top bar, select "File" and then click on "Build Settings", the following window should appear:  
-![alt text](Images/Build.jpg "Build")  
+
+![Build Window](Images/Build.jpg "Build")  
+
 - Firstly, add the relevant scenes you would like in your build, to add the scene you currently have open, press the Add Open Scenes button, and it should appear listed under Scenes in Build with a tick next to it  
 - After the necessary scenes have been added, select Universal Windows Platform as the target platform on the bottom left of the window and click "Switch Platform" located at the bottom if not already selected  
 - For "Target Device", select "HoloLens"  
