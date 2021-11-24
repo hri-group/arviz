@@ -30,7 +30,7 @@ In the situation where the message needs further processing in order to be used 
 Prepare your script with all the elements mentioned above implemented. 
 In order to add the implemented subscriber, click on the ROSConnector GameObject.
 
-![alt text](Images/ROSConnector.PNG "ROSConnector")  
+![alt text](/Images/ROSConnector.PNG "ROSConnector")  
 
 Underneath `ROSConnector`, click on `Add Component` and add script with the name that you give your script and class.  
 Specify the topic that you want this subcriber to subscribe to.
