@@ -594,9 +594,9 @@ PlayerSettings:
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: MonashUniversity
-  metroCertificateIssuer: MonashUniversity
-  metroCertificateNotAfter: 802d4705eb2bd901
+  metroCertificateSubject: DefaultCompany
+  metroCertificateIssuer: DefaultCompany
+  metroCertificateNotAfter: 006c85e97e72d701
   metroApplicationDescription: arviz
   wsaImages: {}
   metroTileShortName: TestProject

@@ -319,7 +319,15 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                             modifier.SetType(marker.type);
                             modifier.SetDimenstion(marker.scale);
                             modifier.SetColour(marker.color);
-                            modifier.SetPoints(marker.points);
+                            if (marker.colors.Length != 0)
+                            {
+                                modifier.SetPointsAndColors(marker.points, marker.colors);
+                            }
+                            else
+                            {
+                                modifier.SetColour(marker.color);
+                                modifier.SetPoints(marker.points);
+                            }
                             break;
                         case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.POINTS:
                             if (!isExisted)
@@ -338,7 +346,15 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                             modifier.SetType(marker.type);
                             modifier.SetDimenstion(marker.scale);
                             modifier.SetColour(marker.color);
-                            modifier.SetPoints(marker.points);
+                            if (marker.colors.Length != 0)
+                            {
+                                modifier.SetPointsAndColors(marker.points, marker.colors);
+                            }
+                            else
+                            {
+                                modifier.SetColour(marker.color);
+                                modifier.SetPoints(marker.points);
+                            }
                             break;
                         case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.TEXT_VIEW_FACING:
                             if (!isExisted)
