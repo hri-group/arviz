@@ -47,6 +47,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
     GameObject textPrefab;
     RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker[] publishedMarkers;
     GameObject displayMarker;
+    List<GameObject> headFrameGameObjs;
     bool isExisted = false;
     WaitForSeconds updateInterval = new WaitForSeconds(0.075f);
     List<GameObject> renderredDisplayMarkers;
@@ -59,13 +60,14 @@ public class VisualisationMarkersDisplay : MonoBehaviour
     TFListener tfListener;
     List<GameObject> publishedTFTree;
     GameObject headerFrameObj;
-    Transform hearderFrame;
+    Transform headerFrame;
     private void OnEnable()
     {
         publishedMarkers = new RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker[0];
         tfListener = GameObject.Find("TFListener").GetComponent<TFListener>();
         renderredDisplayMarkers = new List<GameObject>();
         unusedDisplayMarkers = new List<GameObject>();
+        headFrameGameObjs = new List<GameObject>();
         StartCoroutine(MarkersRenderer());
     }
     IEnumerator MarkersRenderer()
@@ -126,7 +128,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                             if (isExisted)
                             {
                                 unusedDisplayMarkers = renderredDisplayMarkers.FindAll(savedMarker => savedMarker.name.Contains(marker.ns + marker.id + suffixSpacing));
-                                foreach(GameObject unused in unusedDisplayMarkers)
+                                foreach (GameObject unused in unusedDisplayMarkers)
                                 {
                                     if (unused.name != target.name)
                                     {
@@ -158,27 +160,27 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                             Debug.LogWarning("MarkerArray: Action type not found");
                             continue;
                     }
-                    // Update the TFTree
-                    publishedTFTree = tfListener.GetTFTree();
-                    // Find the parent frame of the marker from the TFTree retrieved
-                    if (publishedTFTree != null)
+                    // Attempts to find the hader frame in game objects
+                    GameObject headerFrameGameObj = headFrameGameObjs.Find(obj => obj.name == marker.header.frame_id);
+                    if (headerFrameGameObj == null)
                     {
-                        headerFrameObj = publishedTFTree.Find(frame => frame.name == marker.header.frame_id);
-                        if (headerFrameObj != null)
+                        headerFrameGameObj = GameObject.Find(marker.header.frame_id);
+                        if (headerFrameGameObj != null)
                         {
-                            hearderFrame = headerFrameObj.transform;
-                            Debug.LogWarning("Used correct header frame");
+                            this.headFrameGameObjs.Add(headerFrameGameObj);
                         }
-                        else
-                        {
-                            hearderFrame = transform;
-                            Debug.LogWarning("Could not find the parent frame. Using VisualisationMarkerDisplay frame instead");
-                        }
+                    }
+
+                    if (headerFrameGameObj != null)
+                    {
+                        headerFrame = headerFrameGameObj.transform;
+                        Debug.LogWarning($"Used correct Game object frame of: {marker.header.frame_id} (gameobjpos: {headerFrameGameObj.transform.position}) marker.pos: " +
+                            $"{marker.pose.position.x},{marker.pose.position.y}, {marker.pose.position.z}");
                     }
                     else
                     {
-                        hearderFrame = transform;
-                        Debug.LogWarning("publishedTFTree not found. Using VisualisationMarkerDisplay frame instead");
+                        headerFrame = transform;
+                        Debug.LogWarning($"Could not find correct header frame: {marker.header.frame_id} (headerframe pos: {headerFrame.transform.position})");
                     }
                     switch (marker.type)
                     {
@@ -192,7 +194,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Arrow
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.name = marker.ns + marker.id + markerArrowTag;
                             displayMarker.GetComponent<ArrowManipulation>().SetArrow(marker);
                             break;
@@ -206,7 +208,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify cube
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.name = marker.ns + marker.id + markerCubeTag;
                             displayMarker.transform.localScale = marker.scale.rosMsg2Unity().Ros2UnityScale();
                             displayMarker.transform.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
@@ -223,7 +225,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Sphere
-                            displayMarker.transform.parent = transform;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.name = marker.ns + marker.id + markerSphereTag;
                             displayMarker.transform.localScale = marker.scale.rosMsg2Unity().Ros2UnityScale();
                             displayMarker.transform.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
@@ -240,7 +242,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Cylinder
-                            displayMarker.transform.parent = transform;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.name = marker.ns + marker.id + markerCylinderTag;
                             displayMarker.transform.localScale = new Vector3((float)marker.scale.y, (float)marker.scale.z / 2, (float)marker.scale.x);
                             displayMarker.transform.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
@@ -257,7 +259,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Line Strip
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.transform.localPosition = Vector3.zero;
                             displayMarker.transform.localRotation = Quaternion.identity;
                             displayMarker.name = marker.ns + marker.id + markerLineStripTag;
@@ -292,15 +294,22 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Cube List
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.transform.localPosition = Vector3.zero;
                             displayMarker.transform.localRotation = Quaternion.identity;
                             displayMarker.name = marker.ns + marker.id + markerCubeListTag;
                             modifier = displayMarker.GetComponent<PointCloudManipulation>();
                             modifier.SetType(marker.type);
                             modifier.SetDimenstion(marker.scale);
-                            modifier.SetColour(marker.color);
-                            modifier.SetPoints(marker.points);
+                            if (marker.colors.Length != 0)
+                            {
+                                modifier.SetPointsAndColors(marker.points, marker.colors);
+                            }
+                            else
+                            {
+                                modifier.SetColour(marker.color);
+                                modifier.SetPoints(marker.points);
+                            }
                             break;
                         case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.SPHERE_LIST:
                             if (!isExisted)
@@ -312,14 +321,21 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Sphere List
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.transform.localPosition = Vector3.zero;
                             displayMarker.name = marker.ns + marker.id + markerSphereListTag;
                             modifier = displayMarker.GetComponent<PointCloudManipulation>();
                             modifier.SetType(marker.type);
                             modifier.SetDimenstion(marker.scale);
-                            modifier.SetColour(marker.color);
-                            modifier.SetPoints(marker.points);
+                            if (marker.colors.Length != 0)
+                            {
+                                modifier.SetPointsAndColors(marker.points, marker.colors);
+                            }
+                            else
+                            {
+                                modifier.SetColour(marker.color);
+                                modifier.SetPoints(marker.points);
+                            }
                             break;
                         case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.POINTS:
                             if (!isExisted)
@@ -331,14 +347,21 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify Point List
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.transform.localPosition = Vector3.zero;
                             displayMarker.name = marker.ns + marker.id + markerPointsTag;
                             modifier = displayMarker.GetComponent<PointCloudManipulation>();
                             modifier.SetType(marker.type);
                             modifier.SetDimenstion(marker.scale);
-                            modifier.SetColour(marker.color);
-                            modifier.SetPoints(marker.points);
+                            if (marker.colors.Length != 0)
+                            {
+                                modifier.SetPointsAndColors(marker.points, marker.colors);
+                            }
+                            else
+                            {
+                                modifier.SetColour(marker.color);
+                                modifier.SetPoints(marker.points);
+                            }
                             break;
                         case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.TEXT_VIEW_FACING:
                             if (!isExisted)
@@ -350,7 +373,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modifiy Text
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.transform.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                             displayMarker.name = marker.ns + marker.id + markerTextViewFacingTag;
                             textTool = displayMarker.transform.GetChild(0).GetComponent<TextMeshPro>();
@@ -383,7 +406,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                                 displayMarker = target;
                             }
                             // Modify the mesh
-                            displayMarker.transform.parent = hearderFrame;
+                            displayMarker.transform.parent = headerFrame;
                             displayMarker.transform.localPosition = marker.pose.position.rosMsg2Unity().Ros2Unity();
                             displayMarker.transform.localRotation = marker.pose.orientation.rosMsg2Unity().Ros2Unity();
                             displayMarker.transform.localScale = marker.scale.rosMsg2Unity().Ros2UnityScale();
@@ -401,7 +424,7 @@ public class VisualisationMarkersDisplay : MonoBehaviour
                         default:
                             break;
                     }
-                    // After performing the transformations, return the marker back to VisualisationMarker for easy management
+                    // After performing the transformations, return the marker back to VisualisationMarker for easy management (! should this be done after rendering?)
                     displayMarker.transform.parent = transform;
                     if (!isExisted)
                     {

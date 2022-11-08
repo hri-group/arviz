@@ -54,4 +54,39 @@ public class PointCloudManipulation : MonoBehaviour
             InstatiatedObject.localPosition = point.rosMsg2Unity().Ros2Unity();
         }
     }
+
+    public void SetPointsAndColors(RosSharp.RosBridgeClient.MessageTypes.Geometry.Point[] points, RosSharp.RosBridgeClient.MessageTypes.Std.ColorRGBA[] colors)
+    {
+        if (points.Length != colors.Length)
+        {
+            Debug.Log("Error when creating ponits and colors: Number of colors does not match number of points");
+            return;
+        }
+        for (int i = 0; i < points.Length; i++)
+        {
+            Transform InstatiatedObject = null;
+            switch (objectType)
+            {
+                case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.POINTS:
+                    InstatiatedObject = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity);
+                    InstatiatedObject.localScale = objectDimension + new Vector3(0, 0, 0.001f); // Create thin square
+                    InstatiatedObject.parent = transform;
+                    InstatiatedObject.GetComponent<SquareEffect>().SetSquareEffect(true);
+                    break;
+                case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.CUBE_LIST:
+                    InstatiatedObject = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity);
+                    InstatiatedObject.localScale = objectDimension;
+                    InstatiatedObject.parent = transform;
+                    InstatiatedObject.GetComponent<SquareEffect>().SetSquareEffect(false);
+                    break;
+                case RosSharp.RosBridgeClient.MessageTypes.Visualization.Marker.SPHERE_LIST:
+                    InstatiatedObject = Instantiate(spherePrefab, Vector3.zero, Quaternion.identity);
+                    InstatiatedObject.localScale = objectDimension;
+                    InstatiatedObject.parent = transform;
+                    break;
+            }
+            InstatiatedObject.GetComponent<MeshRenderer>().material.color = colors[i].rosMsg2Unity();
+            InstatiatedObject.localPosition = points[i].rosMsg2Unity().Ros2Unity();
+        }
+    }
 }
