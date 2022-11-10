@@ -46,6 +46,7 @@ Welcome to ARviz!
 - After the necessary scenes have been added, select Universal Windows Platform as the target platform on the bottom left of the window and click "Switch Platform" located at the bottom if not already selected  
 - For "Target Device", select "HoloLens"  
 - For "Architecture", select "ARM64" 
+- For "Target SDK Version", select "10.0.19041.0"
 - For "Build and Run on", if your HoloLens device is connected via USB, select "USB Device", otherwise select "Remote Device" and enter the HoloLens' details to deploy remotely (via WiFi)   
 - For "Build Configuration", use "Release" or "Debug" when testing, and "Master" for deployment of the final solution  
 - Choose "Build And Run" and your application should build, compile, and be deployed onto the HoloLens
