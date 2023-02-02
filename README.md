@@ -52,6 +52,14 @@ Welcome to ARviz!
 - Choose "Build And Run" and your application should build, compile, and be deployed onto the HoloLens
 - There should be around 21 errors when building, this is because of the conflict in the serializer that we used. However, the build should return **SUCCESS** at the end. If not, then check your codes for any other errors  
 
+## Publications
+
+Please cite our paper if you use our code for your project:
+
+K. C. Hoang, W. P. Chan, S. Lay, A. Cosgun, and E. A. Croft, “ARviz: An Augmented Reality-Enabled Visualization Platform for ROS Applications,” IEEE Robotics & Automation Magazine, vol. 29, no. 1, pp. 58–67, Mar. 2022, [doi: 10.1109/MRA.2021.3135760](https://ieeexplore.ieee.org/document/9701489).
+
+arXiv link: https://arxiv.org/abs/2110.15521
+
 ## Feedback appreciated
 
 Our goal is trying to create a package which can be used by any programmers for any AR-HRI-related projects. The READMEs are prepared so anyone can implement their own functionalities from our template. However, in the case that READMEs are confusing or unclear, please let us know and we will try to address it ASAP  
